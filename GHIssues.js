@@ -1,0 +1,181 @@
+// ==UserScript==
+// @name        Issue_Scraper_Script
+// @namespace   toddlerK
+// @description Jajjamensan!
+// @include     https://github.com/HGustavs/LenaSYS/issues/*
+// @include     https://github.com/HGustavs/LenaSYS/pull/*
+// @require       https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js
+// @version     1
+// @grant       GM_xmlhttpRequest
+// ==/UserScript==
+function ajaxCall(data) {
+  try {
+    GM_xmlhttpRequest({
+      method: 'POST',
+      url: 'http://localhost/testwritefile/writefile3.php',
+      data: 'str=' + encodeURIComponent(data),
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      onload: function (response) {
+        console.log('Success!');
+      }
+    });
+  } catch (ex1) {
+    console.log(ex1);
+  }
+}
+function writeContent(strr)
+{
+  strr = $.trim(strr);
+  strr = strr.replace(/</g, '__');  
+  strr = strr.replace(/>/g, '**');  
+  strr = strr.replace(/\//g, '');  
+  strr = strr.replace(/\\/g, '');  
+  strr = strr.replace(/{/g, '');  
+  strr = strr.replace(/}/g, '');  
+  strr = strr.replace(/"/g, '');
+  strr = strr.replace(/'/g, '');
+  strr = strr.replace(/\s/g, ' ');
+  strr = strr.replace(/\s+/g, ' ');
+  return strr;
+}
+// Test cases: 
+// Issue 19 - Reopen and Edit
+// Issue 21 - multiple tags and person assignment.
+// Finished: Tag / Closed / Reopened
+// Issue 4 - Person Assignment
+// .replace(/\s+/g,' ') remove all but one space
+
+var issue = '';
+var issueno = '';
+issueno = $('.gh-header-number').text();
+issueno = issueno.substring(issueno.indexOf('#') + 1);
+issueno++;
+if(issueno>1) issue+=",";
+issue += '{';
+issue += '"issueno":"' + $('.gh-header-number').text() + '",';
+issue += '"issuetitle":"' + writeContent($('.js-issue-title').text()) + '",';
+issue += '"issueauthor":"' + writeContent($('.flex-table-item-primary > .author').text()) + '",';
+issue += '"time":"' + $('.flex-table-item-primary > relative-time').attr('datetime') + '",';
+var stat = writeContent($('.state').text());
+issue += '"state":"' + stat + '",';
+var message=($('.flex-table-item-primary').text());
+issue += '"message":"' + writeContent(message) + '",';
+issue += '"comments":[';
+var iii = 0;
+$('.js-discussion > .timeline-comment-wrapper').each(function () {
+  if (iii != 0) issue += ',';
+  iii++;
+  issue += '{';
+  issue += '"commentauthor":"' + $(this).find('.author').text() + '",';
+  issue += '"content":"' + writeContent($(this).find('.comment-body').text()) + '",';
+  issue += '"time":"' + writeContent($(this).find('.timestamp > relative-time').attr('datetime')) + '",';
+  var doit = 0;
+  var fluffy = $(this);
+  var auth = $(this).find('.author').text();
+  var jjj = 0;
+  issue += '"events":[';
+  // Each event
+  $(this).nextAll().each(function () {
+
+    // Do not process the following
+    if ($(this).hasClass('timeline-progressive-disclosure-container') || $(this).hasClass('outdated-diff-comment-container') || $(this).hasClass('discussion-item-integrations-callout') || $(this).hasClass('closed-banner') || $(this).hasClass('js-comment-container') || $(this).hasClass('js-timeline-marker') || $(this).hasClass('partial-timeline-marker')) {
+
+      
+
+    }else{
+
+      // Start of event
+      if (jjj == 0) {
+        issue += '{';
+      } else {
+        issue += ',{';
+      }
+      
+      var etime = $(this).find('relative-time').attr('datetime');
+      var evauth = $(this).find('.author').first().text();
+
+      issue += '"time":"' + etime + '",';
+      issue += '"eventauthor":"' + evauth + '",';
+      
+      if($(this).hasClass('discussion-item-closed')){
+        issue += '"kind":"Closed"}';
+      }else if($(this).hasClass('discussion-item-reopened')){
+        issue += '"kind":"Reopened"}';
+      }else if($(this).hasClass('discussion-item-labeled')){
+        issue += '"kind":"Labeled"';
+        issue += ',"label":"';
+        $(this).find('.label-color').each(function () {
+          issue+=$(this).text()+",";
+        });
+        issue+='"}';
+      }else if($(this).hasClass('discussion-item-unlabeled')){
+        issue += '"kind":"Unlabeled"';
+        issue += ',"label":"';
+        $(this).find('.label-color').each(function () {
+          issue+=$(this).text()+",";
+        });
+        issue+='"}';
+      }else if($(this).hasClass('discussion-item-assigned')){
+        issue += '"kind":"Assigned"';
+        issue += ',"by":"'+$(this).find('.discussion-item-entity').text()+'"}';
+      }else if($(this).hasClass('discussion-item-ref')){
+        issue += '"kind":"Referenced"';
+        issue += ',"in":"'+writeContent($(this).find('.issue-num').text())+'"}';
+      }else if($(this).hasClass('discussion-item-unassigned')){
+        issue += '"kind":"Unassigned"}';
+      }else if($(this).hasClass('discussion-item-changes-marker')){
+        issue += '"kind":"Changes"}';
+      }else if($(this).hasClass('discussion-item-milestoned')){
+        issue += '"kind":"Milestone"';
+        issue += ',"Stone":"'+$(this).find('.discussion-item-entity').text()+'"}';        
+      }else if($(this).hasClass('discussion-item-demilestoned')){
+        issue += '"kind":"Milestone"';
+        issue += ',"Stone":"'+$(this).find('.discussion-item-entity').text()+'"}';        
+      }else if($(this).hasClass('discussion-item-merged')){
+        issue += '"kind":"Merge"';
+        issue += ',"commit":"'+$(this).find('.discussion-item-entity').text()+'"';
+        issue += ',"into":"'+writeContent($(this).find('.user-select-contain').text())+'"}';        
+      }else if($(this).hasClass('discussion-item discussion-item-head_ref_deleted')){
+        issue += '"kind":"Deleted"';        
+        issue += ',"branch":"'+writeContent($(this).find('.user-select-contain').text())+'"}';
+      }else if($(this).hasClass('discussion-item discussion-commits')){
+        issue += '"kind":"Commit"';        
+        issue += ',"commits":"';
+        $(this).find('.commit').each(function () {
+          issue+=$(this).find('.commit-id').attr("href")+","+$(this).find('.author').text()+",";
+        });
+        issue+='"}';
+      }else if($(this).hasClass('discussion-item discussion-item-renamed')){
+        issue += '"kind":"Renamed"';        
+        issue += ',"from":"'+writeContent($(this).find('.renamed-was').text())+'"';
+        issue += ',"to":"'+writeContent($(this).find('.renamed-is').text())+'"}';
+      }else if($(this).hasClass('discussion-item discussion-item-head_ref_restored')){
+        issue += '"kind":"Restored"';        
+        issue += ',"branch":"'+writeContent($(this).find('.user-select-contain').text())+'"}';
+      }else{
+        alert("Unknown Event: "+$(this).attr('class')+"\n\n"+$(this).html());      
+      }
+    
+      jjj++;
+      
+      // End of skip-over event else
+    }
+    
+    // End of event foreach
+  }
+  );
+  // End of events
+  issue += ']';
+  // End of comment
+  issue += '}';
+}
+);
+// End of comments
+issue += ']';
+issue += '}\n';
+
+
+ajaxCall(issue);
+window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno;
