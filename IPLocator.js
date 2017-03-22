@@ -10,7 +10,7 @@ function ajaxCall(data) {
   try {
     GM_xmlhttpRequest({
       method: 'POST',
-      url: 'http://localhost/testwritefile/writefile2.php',
+      url: 'http://localhost/testwritefile/writefile6.php',
       data: 'str=' + encodeURIComponent(data),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
@@ -20,7 +20,7 @@ function ajaxCall(data) {
       }
     });
   } catch (ex1) {
-    console.log(ex1);
+  	alert(JSON.stringify(ex1));
   }
 }
 

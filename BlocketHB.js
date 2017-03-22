@@ -97,6 +97,8 @@ $('#item_list > article').each(function () {
     if(uheading.indexOf("sprinter")!=-1) brand="MB";  
     if(uheading.indexOf("benivan")!=-1) brand="Beinmar";  
     if(uheading.indexOf("westfalia")!=-1) brand="Westfalia";  
+    if(uheading.indexOf("clever")!=-1) brand="Clever";  
+    if(uheading.indexOf("flexo")!=-1) brand="Adria";  
   
     if(brand!="UNK"){
       if (iii != 0) issue += ',';
