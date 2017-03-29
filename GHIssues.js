@@ -154,6 +154,13 @@ $('.js-discussion > .timeline-comment-wrapper').each(function () {
       }else if($(this).hasClass('discussion-item discussion-item-head_ref_restored')){
         issue += '"kind":"Restored"';        
         issue += ',"branch":"'+writeContent($(this).find('.user-select-contain').text())+'"}';
+      }else if($(this).hasClass('discussion-item-review_requested')){
+        issue += '"kind":"Requested"';
+        issue += ',"from":"'+$(this).find('.discussion-item-entity').text()+'"}';
+      }else if($(this).hasClass('discussion-item-review')){
+        issue += '"kind":"Reviewed"';
+        issue += ',"summary":"'+writeContent($(this).find('.review-summary').text())+'"';
+        issue += ',"by":"'+$(this).find('.discussion-item-entity').text()+'"}';
       }else{
         alert("Unknown Event: "+$(this).attr('class')+"\n\n"+$(this).html());      
       }
