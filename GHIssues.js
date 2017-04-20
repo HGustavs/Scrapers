@@ -47,6 +47,9 @@ function writeContent(strr)
 // Issue 4 - Person Assignment
 // .replace(/\s+/g,' ') remove all but one space
 
+// alert($('.gh-header-meta a').text());
+// alert($('.gh-header-meta relative-time').attr('datetime'));
+
 var issue = '';
 var issueno = '';
 issueno = $('.gh-header-number').text();
@@ -56,11 +59,11 @@ if(issueno>1) issue+=",";
 issue += '{';
 issue += '"issueno":"' + $('.gh-header-number').text() + '",';
 issue += '"issuetitle":"' + writeContent($('.js-issue-title').text()) + '",';
-issue += '"issueauthor":"' + writeContent($('.flex-table-item-primary > .author').text()) + '",';
-issue += '"time":"' + $('.flex-table-item-primary > relative-time').attr('datetime') + '",';
-var stat = writeContent($('.state').text());
+issue += '"issueauthor":"' + writeContent($('.gh-header-meta a').text()) + '",';
+issue += '"time":"' + $('.gh-header-meta relative-time').attr('datetime') + '",';
+var stat = writeContent($('.State').text());
 issue += '"state":"' + stat + '",';
-var message=($('.flex-table-item-primary').text());
+var message=($('.gh-header-meta').text());
 issue += '"message":"' + writeContent(message) + '",';
 issue += '"comments":[';
 var iii = 0;
@@ -161,6 +164,13 @@ $('.js-discussion > .timeline-comment-wrapper').each(function () {
         issue += '"kind":"Reviewed"';
         issue += ',"summary":"'+writeContent($(this).find('.review-summary').text())+'"';
         issue += ',"by":"'+$(this).find('.discussion-item-entity').text()+'"}';
+      }else if($(this).hasClass('discussion-item discussion-item-base_ref_changed')){
+        issue += '"kind":"Rebase"';
+        issue += ',"summary":"'+writeContent($(this).text())+'"}';
+      }else if($(this).hasClass('discussion-item discussion-item-review_request_removed')){
+        issue += '"kind":"Unreview"';
+        issue += ',"summary":"'+writeContent($(this).text())+'"';
+        issue += ',"by":"'+$(this).find('.discussion-item-entity').text()+'"}';
       }else{
         alert("Unknown Event: "+$(this).attr('class')+"\n\n"+$(this).html());      
       }
@@ -183,6 +193,10 @@ $('.js-discussion > .timeline-comment-wrapper').each(function () {
 issue += ']';
 issue += '}\n';
 
+// alert(issue);
 
 ajaxCall(issue);
-window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno;
+
+setTimeout(function(){ window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno; }, 3000);
+
+
