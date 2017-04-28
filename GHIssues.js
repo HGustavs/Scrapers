@@ -204,7 +204,7 @@ $('.js-discussion > .timeline-comment-wrapper').each(function () {
 issue += ']';
 issue += '}\n';
 
-// alert(issue);
+if(issueno==2) alert(issue);
 
 ajaxCall(issue);
 
