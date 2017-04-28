@@ -60,7 +60,13 @@ issue += '{';
 issue += '"issueno":"' + $('.gh-header-number').text() + '",';
 issue += '"issuetitle":"' + writeContent($('.js-issue-title').text()) + '",';
 issue += '"issueauthor":"' + writeContent($('.gh-header-meta a').text()) + '",';
-issue += '"time":"' + $('.gh-header-meta relative-time').attr('datetime') + '",';
+
+var issuetime=$('.gh-header-meta relative-time').attr('datetime');
+if(typeof(issuetime) == "undefined"){
+  issuetime=$('relative-time').attr('datetime');
+}
+issue += '"time":"' + issuetime + '",';
+
 var stat = writeContent($('.State').text());
 issue += '"state":"' + stat + '",';
 var message=($('.gh-header-meta').text());
@@ -74,6 +80,7 @@ $('.js-discussion > .timeline-comment-wrapper').each(function () {
   issue += '"commentauthor":"' + $(this).find('.author').text() + '",';
   issue += '"content":"' + writeContent($(this).find('.comment-body').text()) + '",';
   issue += '"time":"' + writeContent($(this).find('.timestamp > relative-time').attr('datetime')) + '",';
+  var backuptime=$(this).find('.timestamp > relative-time').attr('datetime');
   var doit = 0;
   var fluffy = $(this);
   var auth = $(this).find('.author').text();
@@ -95,10 +102,14 @@ $('.js-discussion > .timeline-comment-wrapper').each(function () {
       } else {
         issue += ',{';
       }
-      
+            
       var etime = $(this).find('relative-time').attr('datetime');
       var evauth = $(this).find('.author').first().text();
 
+      if(typeof(etime) == "undefined"){
+          etime=backuptime;
+      }
+      
       issue += '"time":"' + etime + '",';
       issue += '"eventauthor":"' + evauth + '",';
       
