@@ -18,7 +18,9 @@ function ajaxCall(data) {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       onload: function (response) {
-        console.log('Success!');
+        //console.log('Success!');
+        //setTimeout(function(){ window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno; }, 3000);
+        window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno;
       }
     });
   } catch (ex1) {
@@ -207,7 +209,3 @@ issue += '}\n';
 if(issueno==2) alert(issue);
 
 ajaxCall(issue);
-
-setTimeout(function(){ window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno; }, 3000);
-
-
