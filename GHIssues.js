@@ -20,7 +20,6 @@ function ajaxCall(data) {
       onload: function (response) {
         //console.log('Success!');
         setTimeout(function(){ window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno; }, 1000);
-        //window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno;
       }
     });
   } catch (ex1) {
@@ -209,4 +208,7 @@ issue += '}\n';
 if(issueno==2) alert(issue);
 
 ajaxCall(issue);
+<<<<<<< HEAD
 
+=======
+>>>>>>> FETCH_HEAD
