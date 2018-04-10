@@ -19,8 +19,7 @@ function ajaxCall(data) {
       },
       onload: function (response) {
         //console.log('Success!');
-        //setTimeout(function(){ window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno; }, 3000);
-        window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno;
+        setTimeout(function(){ window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno; }, 1000);
       }
     });
   } catch (ex1) {
@@ -209,3 +208,6 @@ issue += '}\n';
 
 ajaxCall(issue);
 window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno;
+
+=======
+>>>>>>> FETCH_HEAD
