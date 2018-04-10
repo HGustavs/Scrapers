@@ -208,6 +208,3 @@ issue += '}\n';
 
 ajaxCall(issue);
 window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno;
-
-=======
->>>>>>> FETCH_HEAD
