@@ -4,13 +4,13 @@
 // @description Jajjamensan!
 // @include     https://github.com/HGustavs/LenaSYS/issues/*
 // @include     https://github.com/HGustavs/LenaSYS/pull/*
-// @require       https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js
+// @require     https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js
 // @version     1
-// @grant       GM_xmlhttpRequest
+// @grant       GM.xmlHttpRequest
 // ==/UserScript==
 function ajaxCall(data) {
   try {
-    GM_xmlhttpRequest({
+    GM.xmlHttpRequest({
       method: 'POST',
       url: 'http://localhost/testwritefile/writefile3.php',
       data: 'str=' + encodeURIComponent(data),
@@ -92,7 +92,7 @@ $('.js-discussion > .timeline-comment-wrapper').each(function () {
   $(this).nextAll().each(function () {
 
     // Do not process the following
-    if ($(this).hasClass('timeline-progressive-disclosure-container') || $(this).hasClass('outdated-diff-comment-container') || $(this).hasClass('discussion-item-integrations-callout') || $(this).hasClass('closed-banner') || $(this).hasClass('js-comment-container') || $(this).hasClass('js-timeline-marker') || $(this).hasClass('partial-timeline-marker')) {
+    if ($(this).is("#js-timeline-progressive-loader") || $(this).hasClass('js-timeline-progressive-focus-container') || $(this).hasClass('timeline-progressive-disclosure-container') || $(this).hasClass('outdated-diff-comment-container') || $(this).hasClass('discussion-item-integrations-callout') || $(this).hasClass('closed-banner') || $(this).hasClass('js-comment-container') || $(this).hasClass('js-timeline-marker') || $(this).hasClass('partial-timeline-marker')) {
 
       
 
@@ -206,6 +206,6 @@ $('.js-discussion > .timeline-comment-wrapper').each(function () {
 issue += ']';
 issue += '}\n';
 
-if(issueno==2) alert(issue);
 
 ajaxCall(issue);
+window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno;
