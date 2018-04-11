@@ -19,7 +19,8 @@ function ajaxCall(data) {
       },
       onload: function (response) {
         //console.log('Success!');
-        setTimeout(function(){ window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno; }, 1000);
+        //setTimeout(function(){ window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno; }, 3000);
+        window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno;
       }
     });
   } catch (ex1) {
@@ -91,7 +92,7 @@ $('.js-discussion > .timeline-comment-wrapper').each(function () {
   $(this).nextAll().each(function () {
 
     // Do not process the following
-    if ($(this).is("#js-timeline-progressive-loader") || $(this).hasClass('js-timeline-progressive-focus-container') || $(this).hasClass('timeline-progressive-disclosure-container') || $(this).hasClass('outdated-diff-comment-container') || $(this).hasClass('discussion-item-integrations-callout') || $(this).hasClass('closed-banner') || $(this).hasClass('js-comment-container') || $(this).hasClass('js-timeline-marker') || $(this).hasClass('partial-timeline-marker')) {
+    if ($(this).has(":not([class])") || $(this).is("#js-timeline-progressive-loader") || $(this).hasClass('js-timeline-progressive-focus-container') || $(this).hasClass('timeline-progressive-disclosure-container') || $(this).hasClass('outdated-diff-comment-container') || $(this).hasClass('discussion-item-integrations-callout') || $(this).hasClass('closed-banner') || $(this).hasClass('js-comment-container') || $(this).hasClass('js-timeline-marker') || $(this).hasClass('partial-timeline-marker')) {
 
       
 
