@@ -7,12 +7,15 @@
 // @version     1
 // @grant       GM.xmlHttpRequest
 // ==/UserScript==
+
+var dataFile="data_blame_2018_1.js";
+
 function ajaxCall(data) {
   try {
     GM.xmlHttpRequest({
       method: 'POST',
-      url: 'http://localhost/testwritefile/writefile4.php',
-      data: 'str=' + encodeURIComponent(data),
+      url: 'http://localhost/Scrapers/write_blame.php',
+      data: 'fname='+dataFile+'&str=' + encodeURIComponent(data),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
