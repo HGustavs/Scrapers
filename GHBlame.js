@@ -9,6 +9,7 @@
 // ==/UserScript==
 
 var dataFile="data_blame_2018_1.js";
+var fileind="";
 
 function ajaxCall(data) {
   try {
@@ -20,13 +21,22 @@ function ajaxCall(data) {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       onload: function (response) {
-        console.log('Success!');
+        console.log('Success!',response);
+        alert("greger!"+response)
+        
+        if(fileind+2<filearr.length){
+            location.href=purl+filearr[fileind+3];
+        }else{
+          alert("end of scrape "+filename)
+        }        
+        
       }
     });
   } catch (ex1) {
     console.log(ex1);
   }
 }
+
 function writeContent(strr)
 {
   strr = $.trim(strr);
@@ -248,12 +258,6 @@ if(fileind>-1){
     blame += '},\n';
 
     ajaxCall(blame);
-
-    if(fileind+2<filearr.length){
-        location.href=purl+filearr[fileind+3];
-    }else{
-      alert("end of scrape "+filename)
-    }
   
 }else{
   alert(filename+" not found in array");
