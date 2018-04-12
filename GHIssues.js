@@ -59,7 +59,7 @@ function writeEvent(iii,etime,evauth,kind,text)
       ev += '"text":"' + text +'"';  
     	ev += "}";
   
-  		alert(ev);
+  		// alert(ev);
   		return ev;
   
 }
@@ -120,9 +120,10 @@ $('.js-discussion').children().each(function () {
           iii++;
         	issue+=writeEvent(iii,etime,evauth,"comment",ctext);
       }else{
-        	// discussion-item
-      		alert("EVENT: "+etime+" "+evauth+"\n"+cls);
-          console.log(this);
+					$(this).children().each(function () {
+        			console.log(this);
+            	alert(this.class);
+					});
       }  
   
 
