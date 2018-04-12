@@ -14,7 +14,7 @@ function ajaxCall(data) {
   try {
     GM.xmlHttpRequest({
       method: 'POST',
-      url: 'http://localhost/Scrapers/write_blame.php',
+      url: 'http://localhost/Scrapers/write_scrape_data.php',
       data: 'fname='+dataFile+'&str=' + encodeURIComponent(data),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
@@ -111,7 +111,7 @@ var filearr=[
   "stats.js","master/DuggaSys/stats.js",
   "swimlane.php","master/DuggaSys/swimlane.php",
   "swimlaneservice.php","master/DuggaSys/swimlaneservice.php",
-  "swimlane.js","master/DuggaSys/showdoc.js",
+  "swimlane.js","master/DuggaSys/swimlane.js",
   "testDugga.php","master/DuggaSys/testDugga.php",
   "timer.js","master/DuggaSys/timer.js",
   
