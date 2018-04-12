@@ -64,7 +64,6 @@ function writeEvent(iii,etime,evauth,kind,text)
   
 }
 
-
 // Test cases: 
 // Issue 19 - Reopen and Edit
 // Issue 21 - multiple tags and person assignment.
@@ -121,9 +120,31 @@ $('.js-discussion').children().each(function () {
         	issue+=writeEvent(iii,etime,evauth,"comment",ctext);
       }else{
 					$(this).children().each(function () {
-        			console.log(this);
-            	alert(this.class);
-					});
+            	iii++;
+							var evt=this.className.substring(this.className.indexOf("discussion-item")+16);
+            	if(evt==""){
+                console.log(this);
+                var usr=$(this).find(".author").first().text();
+                var txt=$(this).find(".discussion-item-ref-title").first().text();
+
+                if(usr!=""){
+                  alert(usr+" "+txt);
+                }
+              }else if(evt=="discussion-item-labeled"){
+									var usr=$(this).find(".author").first().text();
+									var lbl=$(this).find(".IssueLabel").first().text();
+                	var tme = $(this).find('relative-time').attr('datetime');
+                	issue+=writeEvent(iii,tme,usr,"labeled",lbl);
+              }else if(evt=="discussion-item-closed"){
+									var usr=$(this).find(".author").first().text();
+                	var tme = $(this).find('relative-time').attr('datetime');
+                	issue+=writeEvent(iii,tme,usr,"closed","UNK");
+
+              }else{
+            			alert("Unknown Event: "+evt);              
+              }
+
+          });
       }  
   
 
