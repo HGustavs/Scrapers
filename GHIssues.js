@@ -56,6 +56,7 @@ function writeEvent(iii,etime,evauth,kind,text)
       ev += "{";
       ev += '"time":"' + etime + '",';
       ev += '"eventauthor":"' + evauth + '",';
+	    ev += '"kind":"' + kind + '",';
       ev += '"text":"' + text +'"';  
     	ev += "}";
   
@@ -126,20 +127,25 @@ $('.js-discussion').children().each(function () {
                 console.log(this);
                 var usr=$(this).find(".author").first().text();
                 var txt=$(this).find(".discussion-item-ref-title").first().text();
-
+                var tme = $(this).find('relative-time').attr('datetime');
                 if(usr!=""){
-                  alert(usr+" "+txt);
+                		issue+=writeEvent(iii,tme,usr,"referenced","UNK");
                 }
               }else if(evt=="discussion-item-labeled"){
 									var usr=$(this).find(".author").first().text();
 									var lbl=$(this).find(".IssueLabel").first().text();
                 	var tme = $(this).find('relative-time').attr('datetime');
                 	issue+=writeEvent(iii,tme,usr,"labeled",lbl);
+							}else if(evt=="discussion-item-assigned"){
+									var usr=$(this).find(".author").first().text();
+									var asr=$(this).find(".author").eq(1).text();								
+                	var tme = $(this).find('relative-time').attr('datetime');
+                	issue+=writeEvent(iii,tme,usr,"assigned",asr);
+									alert(usr+""+asr);
               }else if(evt=="discussion-item-closed"){
 									var usr=$(this).find(".author").first().text();
                 	var tme = $(this).find('relative-time').attr('datetime');
                 	issue+=writeEvent(iii,tme,usr,"closed","UNK");
-
               }else{
             			alert("Unknown Event: "+evt);              
               }
