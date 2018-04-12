@@ -22,8 +22,6 @@ function ajaxCall(data) {
       },
       onload: function (response) {
         console.log('Success!',response);
-        alert("greger!"+response)
-        
         if(fileind+2<filearr.length){
             location.href=purl+filearr[fileind+3];
         }else{
