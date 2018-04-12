@@ -150,8 +150,9 @@ var filearr=[
   "placeholder_dugga.js","master/DuggaSys/templates/placeholder_dugga.js",
   "shapes-dugga.html","master/DuggaSys/templates/shapes-dugga.html",
   "shapes-dugga.js","master/DuggaSys/templates/shapes-dugga.js",
-  "transforms.html","master/DuggaSys/templates/transforms.html",
-
+  "transforms-dugga.html","master/DuggaSys/templates/transforms-dugga.html",
+  "transforms-dugga.js","master/DuggaSys/templates/transforms-dugga.js",
+	
 	"blackTheme.css","master/Shared/css/blackTheme.css",
   "blank.css","master/Shared/css/blank.css",
   "codeviewer.css","master/Shared/css/codeviewer.css",
@@ -182,7 +183,6 @@ var filearr=[
   "markdown.js","master/Shared/markdown.js",
   "navheader.php","master/Shared/navheader.php",
   "sessions.php","master/Shared/sessions.php",
-  "swimlane.php","master/Shared/swimlane.php",  
   "resetpw.php","master/Shared/resetpw.php",  
 	"pushnotificationshelper.php","master/Shared/pushnotificationshelper.php",  
   
