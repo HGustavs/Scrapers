@@ -22,7 +22,7 @@ function ajaxCall(data) {
       },
       onload: function (response) {
         //console.log('Success!');
-        //setTimeout(function(){ window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno; }, 3000);
+        setTimeout(function(){ window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno; }, 500);
         //window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno;
       }
     });
@@ -51,13 +51,13 @@ function writeEvent(iii,etime,evauth,kind,text)
   		var ev="";    
   
   		// Add commas if we have an event and it is not the first one
-      if (iii != 0) ev += ',';
+      if (iii != 1) ev += ',';
 
       ev += "{";
       ev += '"time":"' + etime + '",';
       ev += '"eventauthor":"' + evauth + '",';
-	    ev += '"kind":"' + kind + '",';
-      ev += '"text":"' + text +'"';  
+      ev += '"text":"' + text +'",';  
+      ev += '"kind":"' + kind + '"';
     	ev += "}";
   
   		// alert(ev);
@@ -123,29 +123,59 @@ $('.js-discussion').children().each(function () {
 					$(this).children().each(function () {
             	iii++;
 							var evt=this.className.substring(this.className.indexOf("discussion-item")+16);
-            	if(evt==""){
+              var usr=$(this).find(".author").first().text();
+              var tme = $(this).find('relative-time').attr('datetime');            
+
+            	if((evt=="discussion-item-changes-marker")||(evt.indexOf("form js-ajax-pagination")!=-1)){
+              		// Ignore evt
+              }else if(evt==""){
                 console.log(this);
-                var usr=$(this).find(".author").first().text();
-                var txt=$(this).find(".discussion-item-ref-title").first().text();
-                var tme = $(this).find('relative-time').attr('datetime');
+                var txt=writeContent($(this).find(".discussion-item-ref-title").first().text());
                 if(usr!=""){
-                		issue+=writeEvent(iii,tme,usr,"referenced","UNK");
+                  issue+=writeEvent(iii,tme,usr,"referenced",txt);
                 }
-              }else if(evt=="discussion-item-labeled"){
-									var usr=$(this).find(".author").first().text();
-									var lbl=$(this).find(".IssueLabel").first().text();
-                	var tme = $(this).find('relative-time').attr('datetime');
-                	issue+=writeEvent(iii,tme,usr,"labeled",lbl);
-							}else if(evt=="discussion-item-assigned"){
+              }else if(evt=="discussion-item-assigned"){
+									var asr=$(this).find(".author").eq(1).text();								
+                	issue+=writeEvent(iii,tme,usr,"assigned",asr);
+               }else if(evt=="discussion-item-unassigned"){
 									var usr=$(this).find(".author").first().text();
 									var asr=$(this).find(".author").eq(1).text();								
-                	var tme = $(this).find('relative-time').attr('datetime');
-                	issue+=writeEvent(iii,tme,usr,"assigned",asr);
-									alert(usr+""+asr);
+                	issue+=writeEvent(iii,tme,usr,"unassigned",asr);
+              }else if(evt=="discussion-item-labeled"){
+									var lbl=writeContent($(this).find(".IssueLabel").first().text());
+                	issue+=writeEvent(iii,tme,usr,"labeled",lbl);
+              }else if(evt=="discussion-item-unlabeled"){
+									var lbl=writeContent($(this).find(".IssueLabel").first().text());
+                	issue+=writeEvent(iii,tme,usr,"unlabeled",lbl);
               }else if(evt=="discussion-item-closed"){
-									var usr=$(this).find(".author").first().text();
-                	var tme = $(this).find('relative-time').attr('datetime');
                 	issue+=writeEvent(iii,tme,usr,"closed","UNK");
+              }else if(evt=="discussion-commits"){
+                	var commits=$(this).find(".commit-id").text();
+									issue+=writeEvent(iii,tme,usr,"commit",commits);
+              }else if(evt=="discussion-item-head_ref_deleted"){ 
+									var txt=writeContent($(this).find("h3").first().text());
+                	issue+=writeEvent(iii,tme,usr,"deleted",txt);
+              }else if(evt=="discussion-item-milestoned"){ 
+									var txt=writeContent($(this).find("h3").first().text());
+                	issue+=writeEvent(iii,tme,usr,"milestone",txt);
+              }else if(evt=="discussion-item-demilestoned"){ 
+									var txt=writeContent($(this).find("h3").first().text());
+                	issue+=writeEvent(iii,tme,usr,"demilestone",txt);
+              }else if(evt=="discussion-item-renamed"){ 
+									var txt=writeContent($(this).find("h3").first().text());
+                	issue+=writeEvent(iii,tme,usr,"renamed",txt);
+              }else if(evt=="discussion-item-head_ref_restored"){ 
+									var txt=writeContent($(this).find("h3").first().text());
+                	issue+=writeEvent(iii,tme,usr,"restored",txt);
+              }else if(evt=="discussion-item-reopened"){ 
+									var txt=writeContent($(this).find("h3").first().text());
+                	issue+=writeEvent(iii,tme,usr,"reopened",txt);
+              }else if(evt=="discussion-item-review_requested"){ 
+									var txt=writeContent($(this).find("h3").first().text());
+                	issue+=writeEvent(iii,tme,usr,"reviewrequest",txt);
+              }else if(evt.indexOf("discussion-item-merged")!=-1){ 
+									var txt=writeContent($(this).find("h3").first().text());
+                	issue+=writeEvent(iii,tme,usr,"merged",txt);
               }else{
             			alert("Unknown Event: "+evt);              
               }
