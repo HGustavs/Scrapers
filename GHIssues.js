@@ -173,9 +173,20 @@ $('.js-discussion').children().each(function () {
               }else if(evt=="discussion-item-review_requested"){ 
 									var txt=writeContent($(this).find("h3").first().text());
                 	issue+=writeEvent(iii,tme,usr,"reviewrequest",txt);
-              }else if(evt.indexOf("discussion-item-merged")!=-1){ 
+              
+              
+              }else if(evt=="discussion-item-base_ref_changed"){ 
+									var txt=writeContent($(this).find("h3").first().text());
+                	issue+=writeEvent(iii,tme,usr,"refchanged",txt);
+              }else if(evt=="discussion-item-review_request_removed"){ 
+									var txt=writeContent($(this).find("h3").first().text());
+                	issue+=writeEvent(iii,tme,usr,"reviewremoved",txt);
+							}else if(evt.indexOf("discussion-item-merged")!=-1){ 
 									var txt=writeContent($(this).find("h3").first().text());
                 	issue+=writeEvent(iii,tme,usr,"merged",txt);
+							}else if(evt.indexOf("review mt-0")!=-1){ 
+									var txt=writeContent($(this).find("h3").first().text());
+                	issue+=writeEvent(iii,tme,usr,"reviewresult",txt);
               }else{
             			alert("Unknown Event: "+evt);              
               }
