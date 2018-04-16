@@ -17,10 +17,10 @@ This is just commits from the graph data file
 
 date_default_timezone_set('Europe/Berlin' );
 
-$foo=file_get_contents("../GitCommitsOld.js");
+$foo=file_get_contents("../GHData/data_commits_Old.js");
 $arr=json_decode($foo);
 
-$log_db = new PDO('sqlite:../GHdata_2018_1.db');
+$log_db = new PDO('sqlite:../GHData/GHdata_2018_1.db');
 $sql = 'CREATE TABLE IF NOT EXISTS commitgit(id INTEGER PRIMARY KEY,cid VARCHAR(40),p1id VARCHAR(40),p2id VARCHAR(40),author VARCHAR(32),authornme VARCHAR(32),thedate TIMESTAMP,p1start INTEGER,p1end INTEGER,p2start INTEGER,p2end INTEGER, space INTEGER, thetime TIMESTAMP, thetimed INTEGER, thetimeh INTEGER,message TEXT);';
 $log_db->exec($sql);
 
@@ -86,7 +86,7 @@ foreach($arr as $key => $commit){
 
 }
 
-$foo=file_get_contents("../GitCommits2018_1.js");
+$foo=file_get_contents("../GHData/data_commits_2018_1.js");
 $arr=json_decode($foo);
 
 $sql = 'CREATE TABLE IF NOT EXISTS commitgit(id INTEGER PRIMARY KEY,cid VARCHAR(40),p1id VARCHAR(40),p2id VARCHAR(40),author VARCHAR(32),authornme VARCHAR(32),thedate TIMESTAMP,p1start INTEGER,p1end INTEGER,p2start INTEGER,p2end INTEGER, space INTEGER, thetime TIMESTAMP, thetimed INTEGER, thetimeh INTEGER,message TEXT);';

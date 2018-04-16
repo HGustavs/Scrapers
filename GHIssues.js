@@ -43,6 +43,9 @@ function writeContent(strr)
   strr = strr.replace(/'/g, '');
   strr = strr.replace(/\s/g, ' ');
   strr = strr.replace(/\s+/g, ' ');
+	strr = strr.replace(/\(/g,' ');
+	strr = strr.replace(/\)/g,' ');
+	strr = strr.replace(/\,/g,' ');
   return strr;
 }
 

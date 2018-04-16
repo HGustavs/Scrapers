@@ -11,11 +11,13 @@
 
 date_default_timezone_set('Europe/Berlin' );
 
-$foo=file_get_contents("../data_issues_2018_c.js");
+$foo=file_get_contents("../GHData/data_issues_2018_1.js");
+$foo=substr($foo, 1);
 $foo="[".$foo."]";
-$arr=json_decode($foo);
 
-$log_db = new PDO('sqlite:../GHdata_2018_1.db');
+$arr=json_decode($foo);	
+
+$log_db = new PDO('sqlite:../GHData/GHdata_2018_1.db');
 $sql = 'CREATE TABLE IF NOT EXISTS issue (id INTEGER PRIMARY KEY,issueno VARCHAR(8), issuetime TIMESTAMP, issuetimed INTEGER, issuetimeh INTEGER, author VARCHAR(32), state VARCHAR(32), title TEXT, message TEXT);';
 $log_db->exec($sql);
 
@@ -29,7 +31,7 @@ $log_db->exec($sql);
 foreach($arr as $key => $issue){
 	
 		echo "<pre>";
-		echo $issue->issuetitle;
+		echo $issue->issueno."     ".$issue->issuetitle."\n";
 
 		$query = $log_db->prepare('INSERT INTO issue(issueno,issuetime,issuetimed, issuetimeh, author, state, title, message) VALUES (:issueno,:issuetime,:issuetimed,:issuetimeh,:author,:state,:title,:message)');
 
@@ -82,29 +84,12 @@ foreach($arr as $key => $issue){
 				$query->bindParam(':eventtimed', $intervald);
 				$query->bindParam(':eventtimeh', $intervalh);
 				$query->bindParam(':author', $event->eventauthor);
-				$query->bindParam(':kind', $event->text);
-				$query->bindParam(':content', $content);
+				$query->bindParam(':kind', $event->kind);
+				$query->bindParam(':content', $event->text);
 				$query->bindParam(':aux', $aux);			
 				$query->execute();
 			
-				echo $issue->issueno."\n".$event->time."\n".$intervald."\n".$event->eventauthor."\n".$event->text."\n".$content;
-
-			/*
-			
-				if($kind=="Commit"){
-						$commits=explode(",",$event->commits);
-
-						for ($i = 0; $i < count($commits)-1; $i+=2) {
-								$query = $log_db->prepare('INSERT INTO commitdata(issueno, commentno, eventno, author, content) VALUES (:issueno,:commentno,:eventno,:author,:content)');
-								$query->bindParam(':issueno', $issue->issueno);
-								$query->bindParam(':commentno', $ckey);				
-								$query->bindParam(':eventno', $ekey);				
-								$query->bindParam(':author', $commits[$i+1]);
-								$query->bindParam(':content', substr($commits[$i],-40,40));
-								$query->execute();
-						}	
-				}
-			*/
+				// echo $issue->issueno."\n".$event->time."\n".$intervald."\n".$event->eventauthor."\n".$event->text."\n".$content;
 
 
 		}
