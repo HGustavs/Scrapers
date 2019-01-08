@@ -10,8 +10,7 @@
 
 var dataFile="data_blame_2018_1.js";
 var fileind="";
-var repo="v0.85"
-var repos=["v0.6","v0.7","0.8","v0.85","v0.9","v0.95","v0.10","v0.105","master"]
+var repo="master"
 
 function ajaxCall(data) {
   try {
@@ -24,8 +23,11 @@ function ajaxCall(data) {
       },
       onload: function (response) {
         console.log('Success!',response);
-        if(fileind+2<filearr.length){
-            location.href=purl+filearr[fileind+3];
+        console.log(fileind,filearr.length)
+        fileind++;
+        if(fileind<filearr.length){
+          	console.log(purl+repo+"/"+filearr[fileind])
+            location.href=purl+repo+"/"+filearr[fileind];
         }else{
           alert("end of scrape "+filename)
         }        
@@ -53,147 +55,6 @@ function writeContent(strr)
   strr = strr.replace(/\@/g, '');
   return strr;
 }
-
-
-var filearr=[
-  "install.php",repo+"/install/install.php",
-  "init_db.sql",repo+"/install/SQL/init_db.sql",
-  "keywords_html.sql",repo+"/install/SQL/keywords_html.sql",
-  "keywords_java.sql",repo+"/install/SQL/keywords_java.sql",
-  "keywords_php.sql",repo+"/install/SQL/keywords_php.sql",
-  "keywords_plain.sql",repo+"/install/SQL/keywords_plain.sql",
-  "keywords_sql.sql",repo+"/install/SQL/keywords_sql.sql",
-  "keywords_sr.sql",repo+"/install/SQL/keywords_sr.sql",
-  "temptable.sql",repo+"/install/SQL/temptable.sql",
-  "testdata.sql",repo+"/install/SQL/testdata.sql",
-
-	"accessed.js",repo+"/DuggaSys/accessed.js",
-  "accessed.php",repo+"/DuggaSys/accessed.php",
-  "accessedservice.php",repo+"/DuggaSys/accessedservice.php",
-  "clickcounter.js",repo+"/DuggaSys/clickcounter.js",
-  "codeviewer.js",repo+"/DuggaSys/codeviewer.js",
-  "codeviewer.php",repo+"/DuggaSys/codeviewer.php",
-  "codeviewerService.php",repo+"/DuggaSys/codeviewerService.php",
-  "contribution.js",repo+"/DuggaSys/contribution.js",
-  "contribution.php",repo+"/DuggaSys/contribution.php",
-  "contributionservice.php",repo+"/DuggaSys/contributionservice.php",
-  "courseed.js",repo+"/DuggaSys/courseed.js",
-  "courseed.php",repo+"/DuggaSys/courseed.php",
-  "courseedservice.php",repo+"/DuggaSys/courseedservice.php",
-  "cronjob.php",repo+"/DuggaSys/cronjob.php",
-	"diagram.js",repo+"/DuggaSys/diagram.js",
-  "diagram.php",repo+"/DuggaSys/diagram.php",
-  "diagram_example.js",repo+"/DuggaSys/diagram_example.js",
-  "diagram_figure.js",repo+"/DuggaSys/diagram_figure.js",
-  "diagram_symbol.js",repo+"/DuggaSys/diagram_symbol.js",
-	"diagram_toolbox.js",repo+"/DuggaSys/diagram_toolbox.js",
-  "diagram_IOHandler.js",repo+"/DuggaSys/diagram_IOHandler.js",
-  "diagram_IOHandler.php",repo+"/DuggaSys/diagram_IOHandler.php",
-  "diagram_mouse.js",repo+"/DuggaSys/diagram_mouse.js",
-  "diagram_dialog.js",repo+"/DuggaSys/diagram_dialog.js",
-  "diagramservice.php",repo+"/DuggaSys/diagramservice.php",
-  "duggaed.js",repo+"/DuggaSys/duggaed.js",
-  "duggaed.php",repo+"/DuggaSys/duggaed.php",
-  "duggaedservice.php",repo+"/DuggaSys/duggaedservice.php",
-	"fileed.js",repo+"/DuggaSys/fileed.js",
-  "fileed.php",repo+"/DuggaSys/fileed.php",
-  "fileedservice.php",repo+"/DuggaSys/fileedservice.php",
-  "filereceive.php",repo+"/DuggaSys/filereceive.php",
-  "filereceive_dugga.php",repo+"/DuggaSys/filereceive_dugga.php",
-  "migration.php",repo+"/DuggaSys/migration.php",
-  "highscoreservice.php",repo+"/DuggaSys/highscoreservice.php",
-  "profile.php",repo+"/DuggaSys/profile.php",
-  "profile.js",repo+"/DuggaSys/profile.js",
-	"preview.php",repo+"/DuggaSys/preview.php",
-  "pushnotifications.js",repo+"/DuggaSys/pushnotifications.js",
-  "pushnotifications.php",repo+"/DuggaSys/pushnotifications.php",
-  "pushnotificationsserviceworker.js",repo+"/DuggaSys/pushnotificationsserviceworker.js",
-  "resulted.js",repo+"/DuggaSys/resulted.js",
-  "resulted.php",repo+"/DuggaSys/resulted.php",
-  "resultedservice.php",repo+"/DuggaSys/resultedservice.php",
-  "sectioned.js",repo+"/DuggaSys/sectioned.js",
-  "sectioned.php",repo+"/DuggaSys/sectioned.php",
-  "sectionedservice.php",repo+"/DuggaSys/sectionedservice.php",
-  "showDugga.php",repo+"/DuggaSys/showDugga.php",
-  "showDuggaservice.php",repo+"/DuggaSys/showDuggaservice.php",
-  "showdoc.php",repo+"/DuggaSys/showdoc.php",
-	"stats.php",repo+"/DuggaSys/stats.php",
-  "stats.js",repo+"/DuggaSys/stats.js",
-  "swimlane.php",repo+"/DuggaSys/swimlane.php",
-  "swimlaneservice.php",repo+"/DuggaSys/swimlaneservice.php",
-  "swimlane.js",repo+"/DuggaSys/swimlane.js",
-  "testDugga.php",repo+"/DuggaSys/testDugga.php",
-  "timer.js",repo+"/DuggaSys/timer.js",
-  
-	"3d-dugga.html",repo+"/DuggaSys/templates/3d-dugga.html",
-  "3d-dugga.js",repo+"/DuggaSys/templates/3d-dugga.js",
-  "XMLAPI_report1.html",repo+"/DuggaSys/templates/XMLAPI_report1.html",
-  "XMLAPI_report1_file_receive.js",repo+"/DuggaSys/templates/XMLAPI_report1_file_receive.js",
-  "bit-dugga.html",repo+"/DuggaSys/templates/bit-dugga.html",
-  "bit-dugga.js",repo+"/DuggaSys/templates/bit-dugga.js",
-  "boxmodell.html",repo+"/DuggaSys/templates/boxmodell.html",
-  "boxmodell.js",repo+"/DuggaSys/templates/boxmodell.js",
-  "color-dugga.html",repo+"/DuggaSys/templates/color-dugga.html",
-  "color-dugga.js",repo+"/DuggaSys/templates/color-dugga.js",
-  "curve-dugga.html",repo+"/DuggaSys/templates/curve-dugga.html",
-  "curve-dugga.js",repo+"/DuggaSys/templates/curve-dugga.js",
-  "default.js",repo+"/DuggaSys/templates/default.js",
-  "feedback_dugga.html",repo+"/DuggaSys/templates/feedback_dugga.html",
-  "feedback_dugga.js",repo+"/DuggaSys/templates/feedback_dugga.js",
-	"generic_dugga_file_receive.html",repo+"/DuggaSys/templates/generic_dugga_file_receive.html",
-  "generic_dugga_file_receive.js",repo+"/DuggaSys/templates/generic_dugga_file_receive.js",
-  "html_css_dugga.html",repo+"/DuggaSys/templates/html_css_dugga.html",
-  "html_css_dugga.js",repo+"/DuggaSys/templates/html_css_dugga.js",
-  "html_css_dugga_light.html",repo+"/DuggaSys/templates/html_css_dugga_light.html",
-  "html_css_dugga_light.js",repo+"/DuggaSys/templates/html_css_dugga_light.js",
-  "kryss.html",repo+"/DuggaSys/templates/kryss.html",
-  "kryss.js",repo+"/DuggaSys/templates/kryss.js",
-  "placeholder_dugga.html",repo+"/DuggaSys/templates/placeholder_dugga.html",
-  "placeholder_dugga.js",repo+"/DuggaSys/templates/placeholder_dugga.js",
-  "shapes-dugga.html",repo+"/DuggaSys/templates/shapes-dugga.html",
-  "shapes-dugga.js",repo+"/DuggaSys/templates/shapes-dugga.js",
-  "transforms-dugga.html",repo+"/DuggaSys/templates/transforms-dugga.html",
-  "transforms-dugga.js",repo+"/DuggaSys/templates/transforms-dugga.js",
-	
-	"blackTheme.css",repo+"/Shared/css/blackTheme.css",
-  "blank.css",repo+"/Shared/css/blank.css",
-  "codeviewer.css",repo+"/Shared/css/codeviewer.css",
-  "colorblind.css",repo+"/Shared/css/colorblind.css",
-  "dugga.css",repo+"/Shared/css/dugga.css",
-  "markdown.css",repo+"/Shared/css/markdown.css",
-  "style.css",repo+"/Shared/css/style.css",
-  "template1.css",repo+"/Shared/css/template1.css",
-  "template2.css",repo+"/Shared/css/template2.css",
-  "template3.css",repo+"/Shared/css/template3.css",
-  "template4.css",repo+"/Shared/css/template4.css",
-  "template5.css",repo+"/Shared/css/template5.css",
-  "template6.css",repo+"/Shared/css/template6.css",
-  "template7.css",repo+"/Shared/css/template7.css",
-  "template8.css",repo+"/Shared/css/template8.css",
-  "template9.css",repo+"/Shared/css/template9.css",
-  "whiteTheme.css",repo+"/Shared/css/whiteTheme.css",
-	
-  "backup.py",repo+"/Shared/backup.py",
-  "basic.php",repo+"/Shared/basic.php",
-  "constants.php",repo+"/Shared/constants.php",
-  "courses.php",repo+"/Shared/courses.php",
-  "coursesyspw.php",repo+"/Shared/coursesyspw.php",
-  "database.php",repo+"/Shared/database.php",
-  "dugga.js",repo+"/Shared/dugga.js",
-  "loginbox.php",repo+"/Shared/loginbox.php",
-  "loginlogout.php",repo+"/Shared/loginlogout.php",
-  "markdown.js",repo+"/Shared/markdown.js",
-  "navheader.php",repo+"/Shared/navheader.php",
-  "sessions.php",repo+"/Shared/sessions.php",
-  "resetpw.php",repo+"/Shared/resetpw.php",  
-	"pushnotificationshelper.php",repo+"/Shared/pushnotificationshelper.php",  
-  
-	"branch_merge_strategy.md",repo+"/branch_merge_strategy.md",
-	"code_standard.md",repo+"/code_standard.md",
-	"lenasys-markdown.txt",repo+"/lenasys-markdown.txt"
-	
-];
-
 var blame = '';
 var blamefile = '';
 
@@ -202,9 +63,25 @@ hr=location.href;
 filename=(hr.slice(hr.lastIndexOf("/")+1));
 purl=(hr.slice(0,hr.lastIndexOf("blame")+6));
 path=(hr.slice(hr.lastIndexOf("blame")+6));
-path=path.slice(0,path.lastIndexOf("/")+1);
+repo=(path.slice(0,path.indexOf("/")));
+path=path.slice(path.indexOf("/")+1,path.lastIndexOf("/")+1);
 
-fileind=filearr.indexOf(filename);
+var filearr=[];
+if(repo=='v0.4'){
+		filearr="PlayerEditor/js/Preload.js,PlayerEditor/imagerecorder/check_duplicate.php,PlayerEditor/imagerecorder/js/imagerecorder.js,PlayerEditor/imagerecorder/imagerecorder.php,PlayerEditor/imagerecorder/stylesheet.css,PlayerEditor/imagerecorder/upload.php,PlayerEditor/imagerecorder/logfile.php,PlayerEditor/imagerecorder/delete.php,PlayerEditor/consolerenderer/js/caretstate.js,PlayerEditor/consolerenderer/js/tile.js,PlayerEditor/consolerenderer/js/cons.js,PlayerEditor/consolerenderer/js/tiledata.js,PlayerEditor/consolerenderer/design.css,PlayerEditor/consolerenderer/consolerenderer.html,PlayerEditor/canvaswrapper/index.html,PlayerEditor/canvaswrapper/js/canvaswrapper.js,PlayerEditor/canvaswrapper/canvas.xml,PlayerEditor/canvasrenderer/js/canvasrenderer.js,PlayerEditor/canvasrenderer/style.css,PlayerEditor/canvasrenderer/canvasrenderer.php,Shared/functions.php,Shared/init_db.sql,Shared/sessions.php,Shared/courses.php,Shared/database.php,Shared/BenchmarkLogging/webgl-utils.js,Shared/BenchmarkLogging/parseagents.php,Shared/BenchmarkLogging/index.html,Shared/BenchmarkLogging/httpAjax.js,Shared/BenchmarkLogging/Benchy.php,Shared/constants.php,Shared/basic.php,Shared/coursesyspw.php,Shared/SQL/init_db.sql,CodeViewer/css/colorblind.css,CodeViewer/css/blank.css,CodeViewer/css/codeviewer.css,CodeViewer/css/template5.css,CodeViewer/css/template4.css,CodeViewer/css/template3.css,CodeViewer/css/template2.css,CodeViewer/css/blackTheme.css,CodeViewer/css/template1.css,CodeViewer/css/responsive.css,CodeViewer/css/whiteTheme.css,CodeViewer/js/jquery-1.5.1.min.js,CodeViewer/js/codeviewer.js,CodeViewer/js/tooltips.js,CodeViewer/js/templates.js,CodeViewer/editorService.php,CodeViewer/EditorV30.php,CodeViewer/basic.php,DuggaSys/index.php,DuggaSys/css/style.css,DuggaSys/js/paginationStudentlist.js,DuggaSys/js/paginationAccesslist.js,DuggaSys/js/section.js,DuggaSys/js/jquery.datetimepicker.js,DuggaSys/js/sectionhandler.js,DuggaSys/js/duggasys.js,DuggaSys/js/verificationFunctions.js,DuggaSys/js/pagination.js,DuggaSys/js/ajax.js,DuggaSys/templates/exampledugga4.js,DuggaSys/templates/exampledugga5.js,DuggaSys/templates/exampledugga1.js,DuggaSys/templates/exampledugga6.js,DuggaSys/templates/exampledugga2.js,DuggaSys/templates/exampledugga3.js,DuggaSys/templates/exampledugga7.js,DuggaSys/templates/kryss.js,DuggaSys/templates/default.js,DuggaSys/pages/newpassword.php,DuggaSys/pages/404.php,DuggaSys/pages/eventlog.php,DuggaSys/pages/students.php,DuggaSys/pages/newCourseForm.php,DuggaSys/pages/editsection.php,DuggaSys/pages/sectioned.php,DuggaSys/pages/addstudent.php,DuggaSys/pages/menulist.php,DuggaSys/pages/quiz/testfiles/index.php,DuggaSys/pages/quiz/menu.php,DuggaSys/pages/quiz/studentlist.php,DuggaSys/pages/quiz/edit.php,DuggaSys/pages/quiz/quiz.php,DuggaSys/pages/newSectionForm.php,DuggaSys/pages/noid.php,DuggaSys/pages/myresults.php,DuggaSys/header/css/style.css,DuggaSys/header/content/login.php,DuggaSys/header/content/menu.php,DuggaSys/header/content/header.php,DuggaSys/header/header.js,DuggaSys/header/login.js,DuggaSys/header/ajax/newpassword.php,DuggaSys/header/ajax/login.php,DuggaSys/header/ajax/logout.php,DuggaSys/header/ajax/forgotpassword.php,DuggaSys/ajax/newpassword.php,DuggaSys/ajax/SectionedService.php,DuggaSys/ajax/testduggaService.php,DuggaSys/ajax/createQuiz.php,DuggaSys/ajax/createNewCourse.php,DuggaSys/ajax/updateStudentGrade.php,DuggaSys/ajax/resetpassword_ajax.php,DuggaSys/ajax/updateAccess.php,DuggaSys/ajax/deletestudent_ajax.php,DuggaSys/ajax/updateSections.php,DuggaSys/ajax/getstudent_ajax.php,DuggaSys/ajax/getQuizData.php,DuggaSys/ajax/updateCourses.php,DuggaSys/ajax/getQuizFiles.php,DuggaSys/ajax/user_results.php,DuggaSys/ajax/getQuiz.php,DuggaSys/ajax/addstudent_ajax.php,DuggaSys/ajax/checkanswers_ajax.php,DuggaSys/ajax/getTemplateInfo.php,DuggaSys/ajax/getTest.php,DuggaSys/ajax/studentlist_results.php".split(",");
+}else if(repo=='v0.7'){
+		filearr="PlayerEditor/imagerecorder/check_duplicate.php,PlayerEditor/imagerecorder/js/imagerecorder.js,PlayerEditor/imagerecorder/imagerecorder.php,PlayerEditor/imagerecorder/stylesheet.css,PlayerEditor/imagerecorder/upload.php,PlayerEditor/imagerecorder/logfile.php,PlayerEditor/imagerecorder/delete.php,PlayerEditor/consolerenderer/images/bakgrund.png,PlayerEditor/consolerenderer/js/caretstate.js,PlayerEditor/consolerenderer/js/tile.js,PlayerEditor/consolerenderer/js/cons.js,PlayerEditor/consolerenderer/js/tiledata.js,PlayerEditor/consolerenderer/design.css,PlayerEditor/canvaswrapper/index.html,PlayerEditor/canvaswrapper/js/canvaswrapper.js,PlayerEditor/canvaswrapper/logfile.php,PlayerEditor/canvasrenderer/js/canvasrenderer.js,PlayerEditor/canvasrenderer/style.css,PlayerEditor/canvasrenderer/canvasrenderer.php,Shared/loginlogout.php,Shared/dugga.js,Shared/sessions.php,Shared/css/colorblind.css,Shared/css/blank.css,Shared/css/codeviewer.css,Shared/css/jquery.datetimepicker.css,Shared/css/jquery-ui-1.10.4.min.css,Shared/css/template5.css,Shared/css/template4.css,Shared/css/template6.css,Shared/css/template3.css,Shared/css/template2.css,Shared/css/blackTheme.css,Shared/css/template1.css,Shared/css/responsive.css,Shared/css/style.css,Shared/css/whiteTheme.css,Shared/courses.php,Shared/js/Preload.js,Shared/js/tooltips.js,Shared/database.php,Shared/BenchmarkLogging/parseagents.php,Shared/BenchmarkLogging/index.html,Shared/BenchmarkLogging/httpAjax.js,Shared/BenchmarkLogging/Benchy.php,Shared/loginprompt.php,Shared/constants.php,Shared/navheader.php,Shared/basic.php,Shared/loginbox.php,Shared/SQL/init_db.sql,Shared/SQL/testdata.sql,CodeViewer/codeviewer.js,CodeViewer/editorService.php,CodeViewer/dragndropService.php,CodeViewer/dragndrop.js,CodeViewer/dragndrop.php,CodeViewer/EditorV50.php,DuggaSys/sectionedservice.php,DuggaSys/resultlisted.php,DuggaSys/filereceive.php,DuggaSys/timer.js,DuggaSys/showdoc.php,DuggaSys/courseed.js,DuggaSys/accessedservice.php,DuggaSys/courseedservice.php,DuggaSys/highscoreservice.php,DuggaSys/fileed.js,DuggaSys/sectioned.js,DuggaSys/showDugga.php,DuggaSys/showDuggaservice.php,DuggaSys/accessed.php,DuggaSys/resultlistedservice.php,DuggaSys/sectioned.php,DuggaSys/resulted.js,DuggaSys/duggaed.php,DuggaSys/duggaedservice.php,DuggaSys/courseed.php,DuggaSys/fileed.php,DuggaSys/resultedservice.php,DuggaSys/fileedservice.php,DuggaSys/resulted.php,DuggaSys/templates/dugga1.html,DuggaSys/templates/dugga3.js,DuggaSys/templates/dugga2.js,DuggaSys/templates/exampledugga1.js,DuggaSys/templates/dugga.css,DuggaSys/templates/transforms.html,DuggaSys/templates/dugga1.js,DuggaSys/templates/exampledugga.js,DuggaSys/templates/exampledugga2.js,DuggaSys/templates/dugga5.js,DuggaSys/templates/dugga3.html,DuggaSys/templates/dugga2.html,DuggaSys/templates/exampledugga3.js,DuggaSys/templates/kryss.html,DuggaSys/templates/dugga4.js,DuggaSys/templates/exampledugga7.js,DuggaSys/templates/dugga5.html,DuggaSys/templates/kryss.js,DuggaSys/templates/default.js,DuggaSys/templates/dugga4.html,DuggaSys/clickcounter.js,DuggaSys/resultlisted.js,DuggaSys/accessed.js,DuggaSys/duggaed.js,UserManagementView/usermanagementviewservice.php,UserManagementView/css/studentView.css,UserManagementView/css/progressbar2.css,UserManagementView/css/umv.css,UserManagementView/umvSearch.php,UserManagementView/js/studentView.js,UserManagementView/js/teacherView.js,UserManagementView/studentView.php,UserManagementView/redirector.php,UserManagementView/teacherView.php".split(",");
+}else if(repo=='v0.85'){
+		filearr="PlayerEditor/imagerecorder/check_duplicate.php,PlayerEditor/imagerecorder/js/imagerecorder.js,PlayerEditor/imagerecorder/imagerecorder.php,PlayerEditor/imagerecorder/stylesheet.css,PlayerEditor/imagerecorder/upload.php,PlayerEditor/imagerecorder/logfile.php,PlayerEditor/imagerecorder/delete.php,PlayerEditor/consolerenderer/js/caretstate.js,PlayerEditor/consolerenderer/js/tile.js,PlayerEditor/consolerenderer/js/cons.js,PlayerEditor/consolerenderer/js/tiledata.js,PlayerEditor/consolerenderer/design.css,PlayerEditor/consolerenderer/consolerenderer.html,PlayerEditor/canvaswrapper/index.html,PlayerEditor/canvaswrapper/js/canvaswrapper.js,PlayerEditor/canvaswrapper/logfile.php,PlayerEditor/canvasrenderer/js/canvasrenderer.js,PlayerEditor/canvasrenderer/style.css,Shared/loginlogout.php,Shared/backup.py,Shared/dugga.js,Shared/sessions.php,Shared/allowCookiesForUser.php,Shared/css/colorblind.css,Shared/css/blank.css,Shared/css/codeviewer.css,Shared/css/jquery.datetimepicker.css,Shared/css/jquery-ui-1.10.4.min.css,Shared/css/ubuntu-mono-webfont.eot,Shared/css/template5.css,Shared/css/template4.css,Shared/css/template6.css,Shared/css/markdown.css,Shared/css/template7.css,Shared/css/template3.css,Shared/css/template2.css,Shared/css/blackTheme.css,Shared/css/template1.css,Shared/css/hack-extended.min.css,Shared/css/style.css,Shared/css/template9.css,Shared/css/template8.css,Shared/css/whiteTheme.css,Shared/courses.php,Shared/js/Preload.js,Shared/js/tooltips.js,Shared/database.php,Shared/lockbox.php,Shared/BenchmarkLogging/parseagents.php,Shared/BenchmarkLogging/index.html,Shared/BenchmarkLogging/Test1Mountains.html,Shared/BenchmarkLogging/httpAjax.js,Shared/BenchmarkLogging/Benchy.php,Shared/loginprompt.php,Shared/constants.php,Shared/getCookies.php,Shared/navheader.php,Shared/duggaTriedLock.php,Shared/basic.php,Shared/coursesyspw.php,Shared/markdown.js,Shared/loginbox.php,Shared/SQL/init_db.sql,Shared/SQL/add_fontsize_box.sql,Shared/SQL/add_new_templates.sql,Shared/SQL/testdata.sql,DuggaSys/sectionedservice.php,DuggaSys/resultlisted.php,DuggaSys/preview.php,DuggaSys/filereceive.php,DuggaSys/timer.js,DuggaSys/forum.php,DuggaSys/showdoc.php,DuggaSys/changePasswordForm.php,DuggaSys/courseed.js,DuggaSys/accessedservice.php,DuggaSys/courseedservice.php,DuggaSys/filereceive_dugga.php,DuggaSys/highscoreservice.php,DuggaSys/fileed.js,DuggaSys/codeviewer.js,DuggaSys/sectioned.js,DuggaSys/showDugga.php,DuggaSys/showDuggaservice.php,DuggaSys/accessed.php,DuggaSys/optionservice.php,DuggaSys/findUsers.php,DuggaSys/resultlistedservice.php,DuggaSys/sectioned.php,DuggaSys/options.js,DuggaSys/codeviewer.php,DuggaSys/analytictool.php,DuggaSys/resulted.js,DuggaSys/duggaed.php,DuggaSys/duggaedservice.php,DuggaSys/serviceconfirmation.php,DuggaSys/changePassword.php,DuggaSys/courseed.php,DuggaSys/fileed.php,DuggaSys/resultedservice.php,DuggaSys/fileedservice.php,DuggaSys/filereceiveDuggaTemplate.php,DuggaSys/error.php,DuggaSys/analytictoolservice.php,DuggaSys/forumEditor.php,DuggaSys/resulted.php,DuggaSys/options.php,DuggaSys/codeviewerService.php,DuggaSys/templates/boxmodell.html,DuggaSys/templates/html_css_dugga.html,DuggaSys/templates/placeholder_dugga.html,DuggaSys/templates/shapes-dugga.html,DuggaSys/templates/html_css_dugga_light.js,DuggaSys/templates/shapes-dugga.js,DuggaSys/templates/dugga1.html,DuggaSys/templates/placeholder_dugga.js,DuggaSys/templates/exampledugga4.js,DuggaSys/templates/generic_dugga_file_receive.js,DuggaSys/templates/dugga3.js,DuggaSys/templates/exampledugga5.js,DuggaSys/templates/dugga2.js,DuggaSys/templates/exampledugga1.js,DuggaSys/templates/dugga.css,DuggaSys/templates/transforms.html,DuggaSys/templates/exampledugga6.js,DuggaSys/templates/dugga1.js,DuggaSys/templates/exampledugga.js,DuggaSys/templates/exampledugga2.js,DuggaSys/templates/shader_dugga1.html,DuggaSys/templates/dugga5.js,DuggaSys/templates/dugga3.html,DuggaSys/templates/dugga2.html,DuggaSys/templates/exampledugga3.js,DuggaSys/templates/kryss.html,DuggaSys/templates/dugga4.js,DuggaSys/templates/exampledugga7.js,DuggaSys/templates/html_css_dugga_light.html,DuggaSys/templates/html_css_dugga.js,DuggaSys/templates/dugga5.html,DuggaSys/templates/kryss.js,DuggaSys/templates/default.js,DuggaSys/templates/boxmodell.js,DuggaSys/templates/dugga4.html,DuggaSys/templates/color_darkgreen.png,DuggaSys/templates/XMLAPI_report1_file_receive.js,DuggaSys/templates/XMLAPI_report1.html,DuggaSys/templates/generic_dugga_file_receive.html,DuggaSys/clickcounter.js,DuggaSys/thread.php,DuggaSys/resultlisted.js,DuggaSys/logservice.php,DuggaSys/accessed.js,DuggaSys/testDugga.php,DuggaSys/searchFrame.php,DuggaSys/forumservice.php,DuggaSys/duggaed.js,DuggaSys/forum.js,DuggaSys/analytictool.js,UserManagementView/usermanagementviewservice.php,UserManagementView/changepw.php,UserManagementView/css,UserManagementView/css/studentView.css,UserManagementView/css/progressbar2.css,UserManagementView/css/umv.css,UserManagementView/umvSearch.php,UserManagementView/js,UserManagementView/js/studentView.js,UserManagementView/js/teacherView.js,UserManagementView/studentView.php,UserManagementView/redirector.php,UserManagementView/teacherView.php,UserManagementView/changeteacherpw.php,install.py".split(",");
+}else if(repo=='v0.95'){
+		filearr="errorpages/404.php,errorpages/403.php,install/install.php,install/CSS/install_style.css,Shared/loginlogout.php,Shared/backup.py,Shared/dugga.js,Shared/sessions.php,Shared/css/colorblind.css,Shared/css/blank.css,Shared/css/codeviewer.css,Shared/css/template5.css,Shared/css/template4.css,Shared/css/template6.css,Shared/css/markdown.css,Shared/css/template7.css,Shared/css/template3.css,Shared/css/template2.css,Shared/css/blackTheme.css,Shared/css/dugga.css,Shared/css/template1.css,Shared/css/style.css,Shared/css/template9.css,Shared/css/template8.css,Shared/css/throbber.gif,Shared/css/whiteTheme.css,Shared/courses.php,Shared/database.php,Shared/BenchmarkLogging/parseagents.php,Shared/BenchmarkLogging/index.html,Shared/BenchmarkLogging/httpAjax.js,Shared/BenchmarkLogging/Benchy.php,Shared/pushnotificationshelper.php,Shared/constants.php,Shared/navheader.php,Shared/resetpw.php,Shared/basic.php,Shared/markdown.js,Shared/loginbox.php,DuggaSys/swimlane.js,DuggaSys/sectionedservice.php,DuggaSys/contributionservice.php,DuggaSys/pushnotificationsserviceworker.js,DuggaSys/groupedservice.php,DuggaSys/profile.js,DuggaSys/preview.php,DuggaSys/filereceive.php,DuggaSys/timer.js,DuggaSys/showdoc.php,DuggaSys/diagram_dialog.js,DuggaSys/courseed.js,DuggaSys/accessedservice.php,DuggaSys/courseedservice.php,DuggaSys/filereceive_dugga.php,DuggaSys/pushnotifications.php,DuggaSys/forms/attribute_appearance.php,DuggaSys/forms/font_appearance.php,DuggaSys/forms/textsize_appearance.php,DuggaSys/forms/line-thickness_appearance.php,DuggaSys/forms/class_appearance.php,DuggaSys/forms/figure_appearance.php,DuggaSys/forms/fontcolor_appearance.php,DuggaSys/forms/entity_appearance.php,DuggaSys/forms/global_appearance.php,DuggaSys/forms/line_appearance.php,DuggaSys/forms/relation_appearance.php,DuggaSys/forms/fillcolor_appearance.php,DuggaSys/forms/strokecolor_appearance.php,DuggaSys/highscoreservice.php,DuggaSys/fileed.js,DuggaSys/codeviewer.js,DuggaSys/sectioned.js,DuggaSys/showDugga.php,DuggaSys/showDuggaservice.php,DuggaSys/accessed.php,DuggaSys/diagram_figure.js,DuggaSys/diagramservice.php,DuggaSys/diagram_symbol.js,DuggaSys/sectioned.php,DuggaSys/codeviewer.php,DuggaSys/swimlaneservice.php,DuggaSys/resulted.js,DuggaSys/duggaed.php,DuggaSys/grouped.php,DuggaSys/cronjob.php,DuggaSys/duggaedservice.php,DuggaSys/diagram.js,DuggaSys/courseed.php,DuggaSys/diagram_toolbox.js,DuggaSys/fileed.php,DuggaSys/resultedservice.php,DuggaSys/stats.php,DuggaSys/fileedservice.php,DuggaSys/profileservice.php,DuggaSys/resulted.php,DuggaSys/codeviewerService.php,DuggaSys/profile.php,DuggaSys/grouped.js,DuggaSys/clickcounter.js,DuggaSys/diagram_IOHandler.php,DuggaSys/diagram_mouse.js,DuggaSys/pushnotifications.js,DuggaSys/swimlane.php,DuggaSys/diagram_example.js,DuggaSys/accessed.js,DuggaSys/testDugga.php,DuggaSys/diagram_IOHandler.js,DuggaSys/diagram.php,DuggaSys/contribution.php,DuggaSys/stats.js,DuggaSys/contribution.js,DuggaSys/duggaed.js".split(",");
+}else if(repo=='v0.105'){
+		filearr="errorpages/404.php,errorpages/403.php,install/install.php,install/CSS/install_style.css,install/SQL/keywords_java.sql,install/SQL/init_db.sql,install/SQL/keywords_php.sql,install/SQL/temptable.sql,install/SQL/keywords_sr.sql,install/SQL/changes.txt,install/SQL/keywords_sql.sql,install/SQL/testdata.sql,install/SQL/keywords_html.sql,install/SQL/keywords_plain.sql,Shared/loginlogout.php,Shared/backup.py,Shared/dugga.js,Shared/sessions.php,Shared/css/colorblind.css,Shared/css/blank.css,Shared/css/codeviewer.css,Shared/css/jquery.datetimepicker.css,Shared/css/jquery-ui-1.10.4.min.css,Shared/css/template5.css,Shared/css/template4.css,Shared/css/template6.css,Shared/css/markdown.css,Shared/css/template7.css,Shared/css/template3.css,Shared/css/template2.css,Shared/css/blackTheme.css,Shared/css/dugga.css,Shared/css/template1.css,Shared/css/style.css,Shared/css/template9.css,Shared/css/template8.css,Shared/css/whiteTheme.css,Shared/courses.php,Shared/database.php,Shared/BenchmarkLogging/parseagents.php,Shared/BenchmarkLogging/index.html,Shared/BenchmarkLogging/httpAjax.js,Shared/BenchmarkLogging/Benchy.php,Shared/pushnotificationshelper.php,Shared/constants.php,Shared/navheader.php,Shared/resetpw.php,Shared/basic.php,Shared/coursesyspw.php,Shared/markdown.js,Shared/loginbox.php,Shared/SQL/init_db.sql,Shared/SQL/strutt.sql,Shared/SQL/deltachange.sql,DuggaSys/swimlane.js,DuggaSys/sectionedservice.php,DuggaSys/contributionservice.php,DuggaSys/pushnotificationsserviceworker.js,DuggaSys/groupedservice.php,DuggaSys/profile.js,DuggaSys/preview.php,DuggaSys/filereceive.php,DuggaSys/timer.js,DuggaSys/showdoc.php,DuggaSys/diagram_dialog.js,DuggaSys/courseed.js,DuggaSys/accessedservice.php,DuggaSys/courseedservice.php,DuggaSys/filereceive_dugga.php,DuggaSys/pushnotifications.php,DuggaSys/forms,DuggaSys/forms/attribute_appearance.php,DuggaSys/forms/font_appearance.php,DuggaSys/forms/textsize_appearance.php,DuggaSys/forms/line-thickness_appearance.php,DuggaSys/forms/class_appearance.php,DuggaSys/forms/figure_appearance.php,DuggaSys/forms/fontcolor_appearance.php,DuggaSys/forms/entity_appearance.php,DuggaSys/forms/global_appearance.php,DuggaSys/forms/line_appearance.php,DuggaSys/forms/relation_appearance.php,DuggaSys/forms/fillcolor_appearance.php,DuggaSys/forms/strokecolor_appearance.php,DuggaSys/highscoreservice.php,DuggaSys/fileed.js,DuggaSys/codeviewer.js,DuggaSys/sectioned.js,DuggaSys/showDugga.php,DuggaSys/showDuggaservice.php,DuggaSys/accessed.php,DuggaSys/diagram_figure.js,DuggaSys/diagramservice.php,DuggaSys/diagram_symbol.js,DuggaSys/sectioned.php,DuggaSys/codeviewer.php,DuggaSys/swimlaneservice.php,DuggaSys/resulted.js,DuggaSys/duggaed.php,DuggaSys/grouped.php,DuggaSys/cronjob.php,DuggaSys/duggaedservice.php,DuggaSys/diagram.js,DuggaSys/courseed.php,DuggaSys/diagram_toolbox.js,DuggaSys/fileed.php,DuggaSys/resultedservice.php,DuggaSys/stats.php,DuggaSys/fileedservice.php,DuggaSys/profileservice.php,DuggaSys/resulted.php,DuggaSys/codeviewerService.php,DuggaSys/profile.php,DuggaSys/grouped.js,DuggaSys/clickcounter.js,DuggaSys/diagram_mouse.js,DuggaSys/pushnotifications.js,DuggaSys/swimlane.php,DuggaSys/diagram_example.js,DuggaSys/accessed.js,DuggaSys/testDugga.php,DuggaSys/diagram_IOHandler.js,DuggaSys/diagram.php,DuggaSys/contribution.php,DuggaSys/stats.js,DuggaSys/contribution.js,DuggaSys/duggaed.js".split(",");
+}else{
+  	filearr="errorpages/404.php,errorpages/403.php,install/install.php,install/CSS/install_style.css,install/SQL/keywords_java.sql,install/SQL/init_db.sql,install/SQL/keywords_php.sql,install/SQL/temptable.sql,install/SQL/keywords_sr.sql,install/SQL/changes.txt,install/SQL/keywords_sql.sql,install/SQL/testdata.sql,install/SQL/keywords_html.sql,install/SQL/keywords_plain.sql,Shared/loginlogout.php,Shared/backup.py,Shared/dugga.js,Shared/sessions.php,Shared/css/colorblind.css,Shared/css/blank.css,Shared/css/codeviewer.css,Shared/css/jquery.datetimepicker.css,Shared/css/jquery-ui-1.10.4.min.css,Shared/css/template5.css,Shared/css/template4.css,Shared/css/template6.css,Shared/css/markdown.css,Shared/css/template7.css,Shared/css/template3.css,Shared/css/template2.css,Shared/css/blackTheme.css,Shared/css/dugga.css,Shared/css/template1.css,Shared/css/style.css,Shared/css/template9.css,Shared/css/template8.css,Shared/css/whiteTheme.css,Shared/courses.php,Shared/database.php,Shared/BenchmarkLogging/parseagents.php,Shared/BenchmarkLogging/index.html,Shared/BenchmarkLogging/httpAjax.js,Shared/BenchmarkLogging/Benchy.php,Shared/pushnotificationshelper.php,Shared/constants.php,Shared/navheader.php,Shared/resetpw.php,Shared/basic.php,Shared/coursesyspw.php,Shared/markdown.js,Shared/loginbox.php,Shared/SQL/init_db.sql,Shared/SQL/strutt.sql,Shared/SQL/deltachange.sql,DuggaSys/swimlane.js,DuggaSys/sectionedservice.php,DuggaSys/contributionservice.php,DuggaSys/pushnotificationsserviceworker.js,DuggaSys/groupedservice.php,DuggaSys/profile.js,DuggaSys/preview.php,DuggaSys/filereceive.php,DuggaSys/timer.js,DuggaSys/showdoc.php,DuggaSys/diagram_dialog.js,DuggaSys/courseed.js,DuggaSys/accessedservice.php,DuggaSys/courseedservice.php,DuggaSys/filereceive_dugga.php,DuggaSys/pushnotifications.php,DuggaSys/forms,DuggaSys/forms/attribute_appearance.php,DuggaSys/forms/font_appearance.php,DuggaSys/forms/textsize_appearance.php,DuggaSys/forms/line-thickness_appearance.php,DuggaSys/forms/class_appearance.php,DuggaSys/forms/figure_appearance.php,DuggaSys/forms/fontcolor_appearance.php,DuggaSys/forms/entity_appearance.php,DuggaSys/forms/global_appearance.php,DuggaSys/forms/line_appearance.php,DuggaSys/forms/relation_appearance.php,DuggaSys/forms/fillcolor_appearance.php,DuggaSys/forms/strokecolor_appearance.php,DuggaSys/highscoreservice.php,DuggaSys/fileed.js,DuggaSys/codeviewer.js,DuggaSys/sectioned.js,DuggaSys/showDugga.php,DuggaSys/showDuggaservice.php,DuggaSys/accessed.php,DuggaSys/diagram_figure.js,DuggaSys/diagramservice.php,DuggaSys/diagram_symbol.js,DuggaSys/sectioned.php,DuggaSys/codeviewer.php,DuggaSys/swimlaneservice.php,DuggaSys/resulted.js,DuggaSys/duggaed.php,DuggaSys/grouped.php,DuggaSys/cronjob.php,DuggaSys/duggaedservice.php,DuggaSys/diagram.js,DuggaSys/courseed.php,DuggaSys/diagram_toolbox.js,DuggaSys/fileed.php,DuggaSys/resultedservice.php,DuggaSys/stats.php,DuggaSys/fileedservice.php,DuggaSys/profileservice.php,DuggaSys/resulted.php,DuggaSys/codeviewerService.php,DuggaSys/profile.php,DuggaSys/grouped.js,DuggaSys/clickcounter.js,DuggaSys/diagram_mouse.js,DuggaSys/pushnotifications.js,DuggaSys/swimlane.php,DuggaSys/diagram_example.js,DuggaSys/accessed.js,DuggaSys/testDugga.php,DuggaSys/diagram_IOHandler.js,DuggaSys/diagram.php,DuggaSys/contribution.php,DuggaSys/stats.js,DuggaSys/contribution.js,DuggaSys/duggaed.js".split(",");
+}
+
+fileind=filearr.indexOf(path+filename);
 
 if(fileind>-1){
     if(fileind==0){
@@ -260,5 +137,6 @@ if(fileind>-1){
     ajaxCall(blame);
   
 }else{
-  alert(filename+" not found in array");
+  console.log(filearr)
+  alert(path+filename+" not found in array "+ repo +"="+ JSON.stringify(filearr));
 }
