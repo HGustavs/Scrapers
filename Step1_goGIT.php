@@ -20,10 +20,15 @@ date_default_timezone_set('Europe/Berlin' );
 $foo=file_get_contents("../GHData/data_commits_Old.js");
 $arr=json_decode($foo);
 
-$log_db = new PDO('sqlite:../GHData/GHdata_2018_1.db');
+$log_db = new PDO('sqlite:../GHData/GHdata_2018_7.db');
 $sql = 'CREATE TABLE IF NOT EXISTS commitgit(id INTEGER PRIMARY KEY,cid VARCHAR(40),p1id VARCHAR(40),p2id VARCHAR(40),author VARCHAR(32),authornme VARCHAR(32),thedate TIMESTAMP,p1start INTEGER,p1end INTEGER,p2start INTEGER,p2end INTEGER, space INTEGER, thetime TIMESTAMP, thetimed INTEGER, thetimeh INTEGER,message TEXT);';
 $log_db->exec($sql);
 
+// "Constant"	for offsetting new and old commits
+$offso=4570;
+
+$cont=0;
+	
 // For every issue
 foreach($arr as $key => $commit){
 
@@ -84,16 +89,22 @@ foreach($arr as $key => $commit){
 
 		$query->execute();
 
+		echo "<tr><td>O</td>";
+		echo "<td>".$cont."</td>";
+		echo "<td>".$p1Start."</td>";
+		echo "<td>".$p2Start."</td>";
+		echo "<td>".$time."</td>";
+		echo "</tr>";	
+	
+		$cont++;
 }
 
-$foo=file_get_contents("../GHData/data_commits_2018_1.js");
-$arr=json_decode($foo);
-
-$sql = 'CREATE TABLE IF NOT EXISTS commitgit(id INTEGER PRIMARY KEY,cid VARCHAR(40),p1id VARCHAR(40),p2id VARCHAR(40),author VARCHAR(32),authornme VARCHAR(32),thedate TIMESTAMP,p1start INTEGER,p1end INTEGER,p2start INTEGER,p2end INTEGER, space INTEGER, thetime TIMESTAMP, thetimed INTEGER, thetimeh INTEGER,message TEXT);';
-$log_db->exec($sql);
+$foo="";
+$foo=file_get_contents("../GHData/data_commits_2018_7.js");
+$arr2=json_decode($foo);
 
 // For every issue
-foreach($arr as $key => $commit){
+foreach($arr2 as $key => $commit){
 			
 		$p1ID="UNK";
 		$p2ID="UNK";
@@ -103,6 +114,7 @@ foreach($arr as $key => $commit){
 		$p2End="UNK";
 		
 		// Commit or merge
+		//print_r($commit);
 		if(isset($commit->parents[0])){
 				if(isset($commit->parents[1])){
 						$p2ID=$commit->parents[1][0];
@@ -131,9 +143,9 @@ foreach($arr as $key => $commit){
 		
 		$query = $log_db->prepare('INSERT INTO commitgit(cid,p1id,p2id,p1start,p2start,p1end,p2end,space,thetime,thetimed,thetimeh,thedate,author,authornme,message) VALUES (:cid,:p1id,:p2id,:p1start,:p2start,:p1end,:p2end,:space,:thetime,:thetimed,:thetimeh,:thedate,:author,:authornme,:message);');
 
-		$p1Start+=2733;
-		if($p2Start!="UNK") $p2Start+=2733;
-		$time+=2733;
+		$p1Start+=$offso;
+		if($p2Start!="UNK") $p2Start+=$offso;
+		$time+=$offso;
 	
 		$query->bindParam(':cid', $id);
 		$query->bindParam(':p1id', $p1ID);
@@ -154,13 +166,18 @@ foreach($arr as $key => $commit){
 		$query->bindParam(':message', $message);
 		$query->bindParam(':author', $login);
 
-		echo "<tr>";
+		$query->execute();
+	
+		echo "<tr><td>N</td>";
+		echo "<td>".$cont."</td>";
 		echo "<td>".$p1Start."</td>";
 		echo "<td>".$p2Start."</td>";
 		echo "<td>".$time."</td>";
-		echo "</tr>";
+		echo "<td style='color:red;'>".$date."</td>";
+		echo "</tr>";	
+	
+		$cont++;
 
-		$query->execute();
 
 }
 	

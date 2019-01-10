@@ -49,9 +49,9 @@ date_default_timezone_set('Europe/Berlin' );
     
 set_time_limit (5000);
 
-$foo=file_get_contents("../GHData/data_blame_2018_1.js");
+$foo=file_get_contents("../GHData/data_blame_2018_7.js");
 
-$log_db = new PDO('sqlite:../GHData/GHdata_2018_1.db');
+$log_db = new PDO('sqlite:../GHData/GHdata_2018_7.db');
 $sql = 'CREATE TABLE IF NOT EXISTS Bfile (id INTEGER PRIMARY KEY, purl TEXT, path TEXT, filename VARCHAR(256), filesize REAL, filelines INTEGER, harvestdate TIMESTAMP);';
 $log_db->exec($sql);
 

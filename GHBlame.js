@@ -8,7 +8,7 @@
 // @grant       GM.xmlHttpRequest
 // ==/UserScript==
 
-var dataFile="data_blame_2018_1.js";
+var dataFile="data_blame_2018_2.js";
 var fileind="";
 
 function ajaxCall(data) {
