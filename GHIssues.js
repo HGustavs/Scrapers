@@ -9,7 +9,7 @@
 // @grant       GM.xmlHttpRequest
 // ==/UserScript==
 
-var dataFile="data_issues_2018_1.js";
+var dataFile="data_issues_2019_1.js";
 
 function ajaxCall(data) {
   try {
@@ -74,15 +74,19 @@ function writeEvent(iii,etime,evauth,kind,text)
 // Finished: Tag / Closed / Reopened
 // Issue 4 - Person Assignment
 // .replace(/\s+/g,' ') remove all but one space
+// 5984 Added to project
 
 // alert($('.gh-header-meta a').text());
 // alert($('.gh-header-meta relative-time').attr('datetime'));
 
 var issue = '';
 var issueno = '';
+$('.sticky-content').html("");
 issueno = $('.gh-header-number').text();
+alert(issueno);
 issueno = issueno.substring(issueno.indexOf('#') + 1);
 issueno++;
+
 if(issueno>1) issue+=",";
 issue += '{';
 issue += '"issueno":"' + $('.gh-header-number').text() + '",';
@@ -176,8 +180,6 @@ $('.js-discussion').children().each(function () {
               }else if(evt=="discussion-item-review_requested"){ 
 									var txt=writeContent($(this).find("h3").first().text());
                 	issue+=writeEvent(iii,tme,usr,"reviewrequest",txt);
-              
-              
               }else if(evt=="discussion-item-base_ref_changed"){ 
 									var txt=writeContent($(this).find("h3").first().text());
                 	issue+=writeEvent(iii,tme,usr,"refchanged",txt);
@@ -187,10 +189,17 @@ $('.js-discussion').children().each(function () {
 							}else if(evt.indexOf("discussion-item-merged")!=-1){ 
 									var txt=writeContent($(this).find("h3").first().text());
                 	issue+=writeEvent(iii,tme,usr,"merged",txt);
+							}else if(evt.indexOf("discussion-item-added_to_project")!=-1){ 
+									var txt=writeContent($(this).find("h3").first().text());
+                	issue+=writeEvent(iii,tme,usr,"addedto",txt);
+							}else if(evt.indexOf("discussion-item-moved_columns_in_project")!=-1){ 
+									var txt=writeContent($(this).find("h3").first().text());
+									alert(txt);
+                	issue+=writeEvent(iii,tme,usr,"movedcolumns",txt);
 							}else if(evt.indexOf("review mt-0")!=-1){ 
 									var txt=writeContent($(this).find("h3").first().text());
                 	issue+=writeEvent(iii,tme,usr,"reviewresult",txt);
-              }else{
+							}else{
             			alert("Unknown Event: "+evt);              
               }
 
@@ -208,5 +217,6 @@ $('.js-discussion').children().each(function () {
 issue += ']';
 issue += '}\n';
 
+alert(issue);
 
-ajaxCall(issue);
+// ajaxCall(issue);
