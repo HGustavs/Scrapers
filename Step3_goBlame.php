@@ -55,9 +55,10 @@ date_default_timezone_set('Europe/Berlin' );
 set_time_limit (5000);
 
 //$gittags=array(2014=>"v0.4",2015=>"v0.7",2016=>"v0.85",2017=>"v0.95",2018=>"v0.105");
-$gittags=array(2015=>"v0.7",2016=>"v0.85",2017=>"v0.95",2018=>"v0.105");
-
-$log_db = new PDO('sqlite:../GHData/GHdata_2018_1.db');
+//$gittags=array(2015=>"v0.7",2016=>"v0.85",2017=>"v0.95",2018=>"v0.105",2019=>"v0.115");
+$gittags=array(2019=>"v0.115");
+	
+$log_db = new PDO('sqlite:../GHData/GHdata_2019_2.db');
 $log_db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $sql = 'CREATE TABLE IF NOT EXISTS Bfile (id INTEGER PRIMARY KEY, purl TEXT, path TEXT, filename VARCHAR(256), filesize REAL, filelines INTEGER, harvestdate TIMESTAMP, gittag VARCHAR(16), courseyear VARCHAR(8));';
 $log_db->exec($sql);
@@ -81,7 +82,7 @@ foreach($gittags as $courseyear => $gittag){
   $foo=file_get_contents("../GHData/data_blame_".$gittag.".js");
   $startpos=1;
   $endpos=strlen($foo);
-  
+	
   $j=0;
   $i=$startpos;
   
@@ -106,6 +107,8 @@ foreach($gittags as $courseyear => $gittag){
         $i++;
         
       }
+		
+			// echo $workstr."\n";
   
       $fileo=json_decode($workstr);
       $j++;

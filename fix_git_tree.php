@@ -6,7 +6,7 @@ ini_set("auto_detect_line_endings", true);
 
 		echo "[\n";
 
-		$handle = fopen("../GHData/data_commits_2018_7_unfixed.js", "r");
+		$handle = fopen("../GHData/data_commits_2019_2_unfixed.js", "r");
 		$i=0;
 		if ($handle) {
 				$i++;

@@ -9,7 +9,7 @@
 // @grant       GM.xmlHttpRequest
 // ==/UserScript==
 
-var dataFile="data_issues_2019_1.js";
+var dataFile="data_issues_2019_3.js";
 
 function ajaxCall(data) {
   try {
@@ -22,6 +22,7 @@ function ajaxCall(data) {
       },
       onload: function (response) {
         //console.log('Success!');
+        if(issueno==1) alert(issueno);
         setTimeout(function(){ window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno; }, 500);
         //window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno;
       }
@@ -83,7 +84,6 @@ var issue = '';
 var issueno = '';
 $('.sticky-content').html("");
 issueno = $('.gh-header-number').text();
-alert(issueno);
 issueno = issueno.substring(issueno.indexOf('#') + 1);
 issueno++;
 
@@ -194,11 +194,22 @@ $('.js-discussion').children().each(function () {
                 	issue+=writeEvent(iii,tme,usr,"addedto",txt);
 							}else if(evt.indexOf("discussion-item-moved_columns_in_project")!=-1){ 
 									var txt=writeContent($(this).find("h3").first().text());
-									alert(txt);
                 	issue+=writeEvent(iii,tme,usr,"movedcolumns",txt);
 							}else if(evt.indexOf("review mt-0")!=-1){ 
 									var txt=writeContent($(this).find("h3").first().text());
                 	issue+=writeEvent(iii,tme,usr,"reviewresult",txt);
+							}else if(evt.indexOf("discussion-item-base_ref_force_pushed")!=-1){ 
+									var txt=writeContent($(this).find("h3").first().text());
+                	issue+=writeEvent(iii,tme,usr,"forcepush",txt);
+							}else if(evt.indexOf("discussion-item-removed_from_project")!=-1){ 
+									var txt=writeContent($(this).find("h3").first().text());
+                	issue+=writeEvent(iii,tme,usr,"removed",txt);								
+							}else if(evt.indexOf("discussion-item-head_ref_force_pushed")!=-1){ 
+									var txt=writeContent($(this).find("h3").first().text());
+                	issue+=writeEvent(iii,tme,usr,"forcepush",txt);															
+							}else if(evt.indexOf("header f5")!=-1){ 
+									var txt=writeContent($(this).find("h3").first().text());
+                	issue+=writeEvent(iii,tme,usr,"header",txt);		
 							}else{
             			alert("Unknown Event: "+evt);              
               }
@@ -217,6 +228,6 @@ $('.js-discussion').children().each(function () {
 issue += ']';
 issue += '}\n';
 
-alert(issue);
+// alert(issue);
 
-// ajaxCall(issue);
+ajaxCall(issue);
