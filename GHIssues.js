@@ -206,7 +206,10 @@ $('.js-discussion').children().each(function () {
                 	issue+=writeEvent(iii,tme,usr,"removed",txt);								
 							}else if(evt.indexOf("discussion-item-head_ref_force_pushed")!=-1){ 
 									var txt=writeContent($(this).find("h3").first().text());
-                	issue+=writeEvent(iii,tme,usr,"forcepush",txt);															
+                	issue+=writeEvent(iii,tme,usr,"forcepush",txt);					
+							}else if(evt.indexOf("discussion-item-comment_deleted")!=-1){ 
+									var txt=writeContent($(this).find("h3").first().text());
+                	issue+=writeEvent(iii,tme,usr,"delcomment",txt);	                
 							}else if(evt.indexOf("header f5")!=-1){ 
 									var txt=writeContent($(this).find("h3").first().text());
                 	issue+=writeEvent(iii,tme,usr,"header",txt);		

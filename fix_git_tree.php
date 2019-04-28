@@ -6,7 +6,7 @@ ini_set("auto_detect_line_endings", true);
 
 		echo "[\n";
 
-		$handle = fopen("../GHData/data_commits_2019_2_unfixed.js", "r");
+		$handle = fopen("../GHData/data_commits_unfixed_2019_3.js", "r");
 		$i=0;
 		if ($handle) {
 				$i++;
@@ -14,27 +14,19 @@ ini_set("auto_detect_line_endings", true);
 						$objlist=explode('},',$line);
 						$end = end($objlist);
 						foreach($objlist as $key => $value){
-								echo $value;
-								if($end!=$value) echo "},\n";
+								$value=str_replace('{"commits":[',"",$value);
+								//echo substr($value,-3,2); 
+								if(substr($value,-2,1)=="}"){
+									$value=str_replace('}]}','},',$value);
+									echo $value;
+								}else{
+									echo $value;
+									if($end!=$value) echo "},\n";
+								}
 						}
 				}
 		}
 
 		echo "\n]\n";
-
-		// echo "</pre>";
-
-/*
-$content=file_get_contents("../GHData/data_commits_2018_1_unfixed.js");
-$objlist=explode('},',$content);
-
-
-
-foreach($objlist as $key => $value){
-		echo $value;
-		echo "},\n";
-}
-*/
-// echo "</pre>";
 
 ?>

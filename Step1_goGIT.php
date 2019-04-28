@@ -20,7 +20,7 @@ date_default_timezone_set('Europe/Berlin' );
 $foo=file_get_contents("../GHData/data_commits_Old.js");
 $arr=json_decode($foo);
 
-$log_db = new PDO('sqlite:../GHData/GHdata_2019_2.db');
+$log_db = new PDO('sqlite:../GHData/GHdata_2019_3.db');
 $sql = 'CREATE TABLE IF NOT EXISTS commitgit(id INTEGER PRIMARY KEY,cid VARCHAR(40),p1id VARCHAR(40),p2id VARCHAR(40),author VARCHAR(32),authornme VARCHAR(32),thedate TIMESTAMP,p1start INTEGER,p1end INTEGER,p2start INTEGER,p2end INTEGER, space INTEGER, thetime TIMESTAMP, thetimed INTEGER, thetimeh INTEGER,message TEXT);';
 $log_db->exec($sql);
 
@@ -184,12 +184,13 @@ foreach($arr2 as $key => $commit){
 	
 
 $foo="";
-$foo=file_get_contents("../GHData/data_commits_2019_2_fixed.js");
+$foo=file_get_contents("../GHData/data_commits_fixed_2019_3.js");
 $arr3=json_decode($foo);
 echo json_last_error();
 
-// 4999 in new medium file (offs 4570) corresponds to 3577 in new file
-$offso+=1422;
+// 4999 in new medium file (offs 4570 -- eeda1de06fd38cc2eb) corresponds to 3577 in new file _2
+// 2846 in new file _3 add (4999-2846)=2143
+$offso+=2143;
 
 // For every commit
 foreach($arr3 as $key => $commit){
