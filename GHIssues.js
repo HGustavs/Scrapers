@@ -209,7 +209,10 @@ $('.js-discussion').children().each(function () {
                 	issue+=writeEvent(iii,tme,usr,"forcepush",txt);					
 							}else if(evt.indexOf("discussion-item-comment_deleted")!=-1){ 
 									var txt=writeContent($(this).find("h3").first().text());
-                	issue+=writeEvent(iii,tme,usr,"delcomment",txt);	                
+                	issue+=writeEvent(iii,tme,usr,"delcomment",txt);	
+							}else if(evt.indexOf("discussion-item-ready_for_review")!=-1){ 
+									var txt=writeContent($(this).find("h3").first().text());
+                	issue+=writeEvent(iii,tme,usr,"reviewready",txt);								
 							}else if(evt.indexOf("header f5")!=-1){ 
 									var txt=writeContent($(this).find("h3").first().text());
                 	issue+=writeEvent(iii,tme,usr,"header",txt);		
