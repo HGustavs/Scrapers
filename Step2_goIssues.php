@@ -11,7 +11,7 @@
 
 date_default_timezone_set('Europe/Berlin' );
 
-$foo=file_get_contents("../GHData/data_issues_2019_3.js");
+$foo=file_get_contents("../GHData/data_issues_2019_4.js");
 $foo=substr($foo, 1);
 $foo="[".$foo."]";
 
@@ -21,7 +21,7 @@ echo "<pre>";
    echo json_last_error_msg() ;
 echo "</pre>";
 
-$log_db = new PDO('sqlite:../GHData/GHdata_2019_3.db');
+$log_db = new PDO('sqlite:../GHData/GHdata_2019_4.db');
 $sql = 'CREATE TABLE IF NOT EXISTS issue (id INTEGER PRIMARY KEY,issueno VARCHAR(8), issuetime TIMESTAMP, issuetimed INTEGER, issuetimeh INTEGER, author VARCHAR(32), state VARCHAR(32), title TEXT, message TEXT);';
 $log_db->exec($sql);
 

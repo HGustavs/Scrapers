@@ -58,7 +58,7 @@ set_time_limit (5000);
 //$gittags=array(2015=>"v0.7",2016=>"v0.85",2017=>"v0.95",2018=>"v0.105",2019=>"v0.115");
 $gittags=array(2019=>"v0.115");
 	
-$log_db = new PDO('sqlite:../GHData/GHdata_2019_3.db');
+$log_db = new PDO('sqlite:../GHData/GHdata_2019_4.db');
 $log_db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $sql = 'CREATE TABLE IF NOT EXISTS Bfile (id INTEGER PRIMARY KEY, purl TEXT, path TEXT, filename VARCHAR(256), filesize REAL, filelines INTEGER, harvestdate TIMESTAMP, gittag VARCHAR(16), courseyear VARCHAR(8));';
 $log_db->exec($sql);
