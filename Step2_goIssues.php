@@ -11,17 +11,17 @@
 
 date_default_timezone_set('Europe/Berlin' );
 
-$foo=file_get_contents("../GHData/data_issues_2019_4.js");
+$foo=file_get_contents("../GHData/data_issues_2019_10.js");
 $foo=substr($foo, 1);
 $foo="[".$foo."]";
 
 $arr=json_decode($foo);	
 
-echo "<pre>";
+echo "<tr><td>";
    echo json_last_error_msg() ;
-echo "</pre>";
+echo "</td></tr>";
 
-$log_db = new PDO('sqlite:../GHData/GHdata_2019_4.db');
+$log_db = new PDO('sqlite:../GHData/GHdata_2019_10.db');
 $sql = 'CREATE TABLE IF NOT EXISTS issue (id INTEGER PRIMARY KEY,issueno VARCHAR(8), issuetime TIMESTAMP, issuetimed INTEGER, issuetimeh INTEGER, author VARCHAR(32), state VARCHAR(32), title TEXT, message TEXT);';
 $log_db->exec($sql);
 
@@ -34,8 +34,7 @@ $log_db->exec($sql);
 // For every issue
 foreach($arr as $key => $issue){
 	
-		echo "<pre>";
-		echo $issue->issueno."     ".$issue->issuetitle."\n";
+		echo "<tr><td>".$issue->issueno."</td><td>".$issue->issuetitle."</td></tr>";
 
 		$query = $log_db->prepare('INSERT INTO issue(issueno,issuetime,issuetimed, issuetimeh, author, state, title, message) VALUES (:issueno,:issuetime,:issuetimed,:issuetimeh,:author,:state,:title,:message)');
 
@@ -93,14 +92,12 @@ foreach($arr as $key => $issue){
 				$query->bindParam(':aux', $aux);			
 				$query->execute();
 			
-				// echo $issue->issueno."\n".$event->time."\n".$intervald."\n".$event->eventauthor."\n".$event->text."\n".$content;
+				echo "<tr><td>".$issue->issueno."</td><td>".$event->time."</td><td>".$intervald."</td><td>".$event->eventauthor."</td><td>".$event->text."</td><td>".$content."</tr>";
 
 
 		}
 				
 }
-
-echo "\n</pre>";
 
 ?> 
 
