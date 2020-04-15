@@ -9,7 +9,7 @@
 // @grant       GM.xmlHttpRequest
 // ==/UserScript==
 
-var dataFile="data_issues_2019_3.js";
+var dataFile="data_issues_2020_1.js";
 
 function ajaxCall(data) {
   try {
@@ -133,7 +133,7 @@ $('.js-discussion').children().each(function () {
               var usr=$(this).find(".author").first().text();
               var tme = $(this).find('relative-time').attr('datetime');            
 
-            	if((evt=="discussion-item-changes-marker")||(evt.indexOf("form js-ajax-pagination")!=-1)){
+            	if((evt=="discussion-item-changes-marker")||(evt.indexOf("form js-ajax-pagination")!=-1) || (evt.indexOf("js-timeline-progressive-focus-container")!=-1) || (evt.indexOf("details-container Details")!=-1)||(evt=="eak")||(evt.indexOf("js-socket-channel js-updatable-content")!=-1)){
               		// Ignore evt
               }else if(evt==""){
                 console.log(this);

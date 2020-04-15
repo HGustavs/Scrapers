@@ -1,8 +1,9 @@
 <?php
     if(isset($_POST['fname'])){
-        $file="../".$_POST['fname'];
+        //$file="../".$_POST['fname'];
+        $file=$_POST['fname'];
     }else{
-        $file="../scrapeData.js";	
+        $file="scrapeData.js";	
 		}
 
 		echo $file;
