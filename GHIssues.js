@@ -11,6 +11,17 @@
 
 var dataFile="data_issues_2020_1.js";
 
+var ignoreEvtArr=[
+  "discussion-item-changes-marker",
+  "form js-ajax-pagination",
+  "js-timeline-progressive-focus-container",
+  "details-container Details",
+  "eak",
+	"js-socket-channel js-updatable-content",
+  "dge text-white bg-red",
+  "dy"
+];
+
 function ajaxCall(data) {
   try {
     GM.xmlHttpRequest({
@@ -23,7 +34,7 @@ function ajaxCall(data) {
       onload: function (response) {
         //console.log('Success!');
         if(issueno==1) alert(issueno);
-        setTimeout(function(){ window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno; }, 500);
+        setTimeout(function(){ window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno; }, 4000+Math.floor(Math.random()*1000));
         //window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno;
       }
     });
@@ -133,7 +144,8 @@ $('.js-discussion').children().each(function () {
               var usr=$(this).find(".author").first().text();
               var tme = $(this).find('relative-time').attr('datetime');            
 
-            	if((evt=="discussion-item-changes-marker")||(evt.indexOf("form js-ajax-pagination")!=-1) || (evt.indexOf("js-timeline-progressive-focus-container")!=-1) || (evt.indexOf("details-container Details")!=-1)||(evt=="eak")||(evt.indexOf("js-socket-channel js-updatable-content")!=-1)){
+							//if(evt=="discussion-item-changes-marker")||(evt.indexOf("form js-ajax-pagination")!=-1) || (evt.indexOf("js-timeline-progressive-focus-container")!=-1) || (evt.indexOf("details-container Details")!=-1)||(evt=="eak")||(evt.indexOf("js-socket-channel js-updatable-content")!=-1) || (evt.indexOf("dge text-white bg-red")!=-1){
+							if(ignoreEvtArr.indexOf(evt)!=1){
               		// Ignore evt
               }else if(evt==""){
                 console.log(this);
