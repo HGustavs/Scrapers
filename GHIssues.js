@@ -22,6 +22,8 @@ var ignoreEvtArr=[
   "dy"
 ];
 
+var excludeIssuesArr=[5919];
+
 function ajaxCall(data) {
   try {
     GM.xmlHttpRequest({
@@ -97,6 +99,10 @@ $('.sticky-content').html("");
 issueno = $('.gh-header-number').text();
 issueno = issueno.substring(issueno.indexOf('#') + 1);
 issueno++;
+while(excludeIssuesArr.indexOf(issueno)!=-1){
+  issueno++;
+}
+
 
 if(issueno>1) issue+=",";
 issue += '{';
