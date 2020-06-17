@@ -9,7 +9,11 @@
 // @grant       GM.xmlHttpRequest
 // ==/UserScript==
 
-var dataFile="data_issues_2020_1.js";
+var start=1;
+var stop=1000;
+var timeoutDelay=2000;
+var dataFile="data_issues_2020_v10.js";
+const serviceUrl="http://localhost/~brom/Scrapers/write_scrape_data.php";
 
 var ignoreEvtArr=[
   "discussion-item-changes-marker",
@@ -28,16 +32,19 @@ function ajaxCall(data) {
   try {
     GM.xmlHttpRequest({
       method: 'POST',
-      url: 'http://localhost/Scrapers/write_scrape_data.php',
+      url: serviceUrl,
       data: 'fname='+dataFile+'&str=' + encodeURIComponent(data),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       onload: function (response) {
         //console.log('Success!');
-        if(issueno==1) alert(issueno);
-        setTimeout(function(){ window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno; }, 4000+Math.floor(Math.random()*1000));
-        //window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno;
+        if(issueno<=start || issueno>stop){
+          alert("Done scraping! The data is collected in "+dataFile)
+        }else{
+        	setTimeout(function(){ window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno; }, timeoutDelay+Math.floor(Math.random()*1000));
+        	//window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno;
+        }
       }
     });
   } catch (ex1) {
