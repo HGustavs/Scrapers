@@ -135,8 +135,9 @@ $('.TimelineItem').each(function (i,tl) {
   	var usr=$(tl).find(".author").first().text();
     var evtDescription=$(tl).find(".author")[0].nextSibling.textContent.trim().split(' ')[0];
   	var evt="UNK";
-  	var svg=$(tl).find("svg")[0];
+  	var svg=$(tl).find("svg");
   	if(svg){
+      	svg=svg[0];
         evt=svg.getAttribute("class");
         evt=evt.substring(evt.indexOf("octicon-")+8)
         if(evtDescription!=""){
@@ -206,10 +207,10 @@ $('.TimelineItem').each(function (i,tl) {
       var txt=writeContent($(this).find("h3").first().text());
       issue+=writeEvent(iii,tme,usr,"merged",txt);
     }else if(/*evt.indexOf("discussion-item-added_to_project")!=-1*/ evt=="project-added"){ 
-      var txt=writeContent($(this).find("h3").first().text());
-      issue+=writeEvent(iii,tme,usr,"addedto",txt);
+      var txt=$(tl).find(".TimelineItem-body").first().text().replace(/\s{2,}/g,' ').replace(/\n/g,'');;
+      issue+=writeEvent(i,tme,usr,"addedto",txt);
     }else if(/*evt.indexOf("discussion-item-moved_columns_in_project")!=-1*/ evt=="project-moved"){ 
-      var txt=$(tl).find("TimelineItem-body")[0].innerText;
+      var txt=$(tl).find(".TimelineItem-body").first().text().replace(/\s{2,}/g,' ').replace(/\n/g,'');
       issue+=writeEvent(i,tme,usr,"movedcolumns",txt);
     }else if(evt.indexOf("review mt-0")!=-1){ 
       var txt=writeContent($(this).find("h3").first().text());
