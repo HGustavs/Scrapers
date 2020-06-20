@@ -10,7 +10,7 @@
 // ==/UserScript==
 
 var start=1;
-var stop=1000;
+var stop=5;
 var timeoutDelay=2000;
 var dataFile="data_issues_2020_v10.js";
 const serviceUrl="http://localhost/~brom/Scrapers/write_scrape_data.php";
@@ -124,7 +124,6 @@ if(typeof(issuetime) == "undefined"){
 issue += '"time":"' + issuetime + '",';
 
 var stat = writeContent($('.State').first().text());
-alert(stat)
 issue += '"state":"' + stat + '",';
 var message=($('.gh-header-meta').text());
 issue += '"message":"' + writeContent(message) + '",';
@@ -162,18 +161,25 @@ $('.TimelineItem').each(function (i,tl) {
     }else if(/*evt=="discussion-item-assigned"*/ evt=="person-assigned"){
       var asr=$(tl).find(".author").next().text();								
       issue+=writeEvent(i,tme,usr,"assigned",asr);
+    }else if(/*evt=="discussion-item-assigned"*/ evt=="person-self-assigned"){
+      var asr=$(tl).find(".author").next().text();								
+      issue+=writeEvent(i,tme,usr,"selfassigned",asr);
     }else if(/*evt=="discussion-item-unassigned"*/ evt=="person-unassigned"){
       //var usr=$(this).find(".author").first().text();
       var asr=$(tl).find(".author").next().text();								
       issue+=writeEvent(i,tme,usr,"unassigned",asr);
+    }else if(/*evt=="discussion-item-unassigned"*/ evt=="person-removed"){
+      //var usr=$(this).find(".author").first().text();
+      var asr=$(tl).find(".author").next().text();								
+      issue+=writeEvent(i,tme,usr,"removedselfassigned",asr);
     }else if(/*evt=="discussion-item-labeled"*/  evt=="tag-added"){
       var lbl=writeContent($(tl).find(".IssueLabel").first().text());
       issue+=writeEvent(i,tme,usr,"labeled",lbl);
     }else if(/*evt=="discussion-item-unlabeled"*/ evt=="tag-removed"){
       var lbl=writeContent($(tl).find(".IssueLabel").first().text());
       issue+=writeEvent(i,tme,usr,"unlabeled",lbl);
-    }else if(evt=="discussion-item-closed"){
-      issue+=writeEvent(iii,tme,usr,"closed","UNK");
+    }else if(/*evt=="discussion-item-closed"*/ evt=="circle-slash-closed"){
+      issue+=writeEvent(i,tme,usr,"closed","UNK");
     }else if(evt=="discussion-commits"){
       var commits=$(this).find(".commit-id").text();
       issue+=writeEvent(iii,tme,usr,"commit",commits);
@@ -238,6 +244,15 @@ $('.TimelineItem').each(function (i,tl) {
       // TODO: what txt should we add?
       var txt="";
       issue+=writeEvent(i,tme,usr,"pullrequestlinked",txt);		
+    }else if(evt=="cross-reference-added"){       
+      var txt=$(tl).find(".TimelineItem-body").first().text().replace(/\s{2,}/g,' ').replace(/\n/g,'');
+      issue+=writeEvent(i,tme,usr,"mentionedissue",txt);		
+    }else if(evt=="cross-reference-mentioned"){       
+      var txt=$(tl).find(".TimelineItem-body").first().text().replace(/\s{2,}/g,' ').replace(/\n/g,'');
+      issue+=writeEvent(i,tme,usr,"mentionedissue",txt);		
+    }else if(evt=="cross-reference-referenced"){       
+      var txt=$(tl).find(".TimelineItem-body").first().text().replace(/\s{2,}/g,' ').replace(/\n/g,'');
+      issue+=writeEvent(i,tme,usr,"mentionedissue",txt);		
     }else{
       alert("Unknown Event: "+evt+"\n\n"+tl.innerHTML);              
     }
