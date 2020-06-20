@@ -75,7 +75,7 @@ function writeEvent(iii,etime,evauth,kind,text)
   		var ev="";    
   
   		// Add commas if we have an event and it is not the first one
-      if (iii != 1) ev += ',';
+      if (iii != 0) ev += ',';
 
       ev += "{";
       ev += '"time":"' + etime + '",';
@@ -84,7 +84,7 @@ function writeEvent(iii,etime,evauth,kind,text)
       ev += '"kind":"' + kind + '"';
     	ev += "}";
   
-  		alert(ev);
+  		//alert(ev);
   		return ev;
   
 }
@@ -123,7 +123,8 @@ if(typeof(issuetime) == "undefined"){
 }
 issue += '"time":"' + issuetime + '",';
 
-var stat = writeContent($('.State').text());
+var stat = writeContent($('.State').first().text());
+alert(stat)
 issue += '"state":"' + stat + '",';
 var message=($('.gh-header-meta').text());
 issue += '"message":"' + writeContent(message) + '",';
@@ -238,7 +239,7 @@ $('.TimelineItem').each(function (i,tl) {
       var txt="";
       issue+=writeEvent(i,tme,usr,"pullrequestlinked",txt);		
     }else{
-      alert("Unknown Event: "+evt);              
+      alert("Unknown Event: "+evt+"\n\n"+tl.innerHTML);              
     }
   
 });
