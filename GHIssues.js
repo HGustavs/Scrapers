@@ -64,7 +64,7 @@ function writeEvent(iii,etime,evauth,kind,text)
       ev += '"kind":"' + kind + '"';
     	ev += "}";
   
-  		// alert(ev);
+  		alert(ev);
   		return ev;
   
 }
@@ -106,6 +106,119 @@ issue += '"message":"' + writeContent(message) + '",';
 issue += '"events":[';
 var iii = 0;
 var backuptime="UNK";
+$('.TimelineItem').each(function (i,tl) {
+  	var tme = $(tl).find('relative-time').attr('datetime'); 
+  	var usr=$(tl).find(".author").first().text();
+    var evtDescription=$(tl).find(".author")[0].nextSibling.textContent.trim().split(' ')[0];
+  	var evt="UNK";
+  	var svg=$(tl).find("svg")[0];
+  	if(svg){
+        evt=svg.getAttribute("class");
+        evt=evt.substring(evt.indexOf("octicon-")+8)
+        if(evtDescription!=""){
+           evt+="-"+evtDescription;
+        }
+        evt=evt.trim();       
+    }
+  	
+    //alert(i+":"+evt+":"+tme+":"+usr+":"+evtDescription)
+  
+    if((evt=="UNK")){
+      // Ignore evt
+    }else if(evt==""){
+      var txt=writeContent($(this).find(".discussion-item-ref-title").first().text());
+      if(usr!=""){
+        issue+=writeEvent(iii,tme,usr,"referenced",txt);
+      }
+    }else if(evt=="kebab-horizontal"){      
+      var txt=writeContent($(this).find(".comment-body").first().text());
+      issue+=writeEvent(i,tme,usr,"comment",txt);
+    }else if(/*evt=="discussion-item-assigned"*/ evt=="person-assigned"){
+      var asr=$(tl).find(".author").next().text();								
+      issue+=writeEvent(i,tme,usr,"assigned",asr);
+    }else if(/*evt=="discussion-item-unassigned"*/ evt=="person-unassigned"){
+      //var usr=$(this).find(".author").first().text();
+      var asr=$(tl).find(".author").next().text();								
+      issue+=writeEvent(i,tme,usr,"unassigned",asr);
+    }else if(/*evt=="discussion-item-labeled"*/  evt=="tag-added"){
+      var lbl=writeContent($(tl).find(".IssueLabel").first().text());
+      issue+=writeEvent(i,tme,usr,"labeled",lbl);
+    }else if(/*evt=="discussion-item-unlabeled"*/ evt=="tag-removed"){
+      var lbl=writeContent($(tl).find(".IssueLabel").first().text());
+      issue+=writeEvent(i,tme,usr,"unlabeled",lbl);
+    }else if(evt=="discussion-item-closed"){
+      issue+=writeEvent(iii,tme,usr,"closed","UNK");
+    }else if(evt=="discussion-commits"){
+      var commits=$(this).find(".commit-id").text();
+      issue+=writeEvent(iii,tme,usr,"commit",commits);
+    }else if(evt=="discussion-item-head_ref_deleted"){ 
+      var txt=writeContent($(this).find("h3").first().text());
+      issue+=writeEvent(iii,tme,usr,"deleted",txt);
+    }else if(evt=="discussion-item-milestoned"){ 
+      var txt=writeContent($(this).find("h3").first().text());
+      issue+=writeEvent(iii,tme,usr,"milestone",txt);
+    }else if(evt=="discussion-item-demilestoned"){ 
+      var txt=writeContent($(this).find("h3").first().text());
+      issue+=writeEvent(iii,tme,usr,"demilestone",txt);
+    }else if(evt=="discussion-item-renamed"){ 
+      var txt=writeContent($(this).find("h3").first().text());
+      issue+=writeEvent(iii,tme,usr,"renamed",txt);
+    }else if(evt=="discussion-item-head_ref_restored"){ 
+      var txt=writeContent($(this).find("h3").first().text());
+      issue+=writeEvent(iii,tme,usr,"restored",txt);
+    }else if(evt=="discussion-item-reopened"){ 
+      var txt=writeContent($(this).find("h3").first().text());
+      issue+=writeEvent(iii,tme,usr,"reopened",txt);
+    }else if(evt=="discussion-item-review_requested"){ 
+      var txt=writeContent($(this).find("h3").first().text());
+      issue+=writeEvent(iii,tme,usr,"reviewrequest",txt);
+    }else if(evt=="discussion-item-base_ref_changed"){ 
+      var txt=writeContent($(this).find("h3").first().text());
+      issue+=writeEvent(iii,tme,usr,"refchanged",txt);
+    }else if(evt=="discussion-item-review_request_removed"){ 
+      var txt=writeContent($(this).find("h3").first().text());
+      issue+=writeEvent(iii,tme,usr,"reviewremoved",txt);
+    }else if(evt.indexOf("discussion-item-merged")!=-1){ 
+      var txt=writeContent($(this).find("h3").first().text());
+      issue+=writeEvent(iii,tme,usr,"merged",txt);
+    }else if(/*evt.indexOf("discussion-item-added_to_project")!=-1*/ evt=="project-added"){ 
+      var txt=writeContent($(this).find("h3").first().text());
+      issue+=writeEvent(iii,tme,usr,"addedto",txt);
+    }else if(/*evt.indexOf("discussion-item-moved_columns_in_project")!=-1*/ evt=="project-moved"){ 
+      var txt=$(tl).find("TimelineItem-body")[0].innerText;
+      issue+=writeEvent(i,tme,usr,"movedcolumns",txt);
+    }else if(evt.indexOf("review mt-0")!=-1){ 
+      var txt=writeContent($(this).find("h3").first().text());
+      issue+=writeEvent(iii,tme,usr,"reviewresult",txt);
+    }else if(evt.indexOf("discussion-item-base_ref_force_pushed")!=-1){ 
+      var txt=writeContent($(this).find("h3").first().text());
+      issue+=writeEvent(iii,tme,usr,"forcepush",txt);
+    }else if(evt.indexOf("discussion-item-removed_from_project")!=-1){ 
+      var txt=writeContent($(this).find("h3").first().text());
+      issue+=writeEvent(iii,tme,usr,"removed",txt);								
+    }else if(evt.indexOf("discussion-item-head_ref_force_pushed")!=-1){ 
+      var txt=writeContent($(this).find("h3").first().text());
+      issue+=writeEvent(iii,tme,usr,"forcepush",txt);					
+    }else if(evt.indexOf("discussion-item-comment_deleted")!=-1){ 
+      var txt=writeContent($(this).find("h3").first().text());
+      issue+=writeEvent(iii,tme,usr,"delcomment",txt);	
+    }else if(evt.indexOf("discussion-item-ready_for_review")!=-1){ 
+      var txt=writeContent($(this).find("h3").first().text());
+      issue+=writeEvent(iii,tme,usr,"reviewready",txt);								
+    }else if(evt.indexOf("header f5")!=-1){ 
+      var txt=writeContent($(this).find("h3").first().text());
+      issue+=writeEvent(iii,tme,usr,"header",txt);		
+    }else if(evt=="bookmark-linked"){       
+      // TODO: what txt should we add?
+      var txt="";
+      issue+=writeEvent(i,tme,usr,"pullrequestlinked",txt);		
+    }else{
+      alert("Unknown Event: "+evt);              
+    }
+  
+});
+
+/*
 $('.js-discussion').children().each(function () {
   
   var cls=this.className;
@@ -230,6 +343,7 @@ $('.js-discussion').children().each(function () {
 
 }
 );
+*/
 // End of events
 issue += ']';
 issue += '}\n';
