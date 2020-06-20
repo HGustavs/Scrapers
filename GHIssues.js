@@ -9,22 +9,42 @@
 // @grant       GM.xmlHttpRequest
 // ==/UserScript==
 
-var dataFile="data_issues_2020_1.js";
+var start=1;
+var stop=1000;
+var timeoutDelay=2000;
+var dataFile="data_issues_2020_v10.js";
+const serviceUrl="http://localhost/~brom/Scrapers/write_scrape_data.php";
+
+var ignoreEvtArr=[
+  "discussion-item-changes-marker",
+  "form js-ajax-pagination",
+  "js-timeline-progressive-focus-container",
+  "details-container Details",
+  "eak",
+	"js-socket-channel js-updatable-content",
+  "dge text-white bg-red",
+  "dy"
+];
+
+var excludeIssuesArr=[5919];
 
 function ajaxCall(data) {
   try {
     GM.xmlHttpRequest({
       method: 'POST',
-      url: 'http://localhost/Scrapers/write_scrape_data.php',
+      url: serviceUrl,
       data: 'fname='+dataFile+'&str=' + encodeURIComponent(data),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       onload: function (response) {
         //console.log('Success!');
-        if(issueno==1) alert(issueno);
-        setTimeout(function(){ window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno; }, 500);
-        //window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno;
+        if(issueno<=start || issueno>stop){
+          alert("Done scraping! The data is collected in "+dataFile)
+        }else{
+        	setTimeout(function(){ window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno; }, timeoutDelay+Math.floor(Math.random()*1000));
+        	//window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno;
+        }
       }
     });
   } catch (ex1) {
@@ -86,6 +106,10 @@ $('.sticky-content').html("");
 issueno = $('.gh-header-number').text();
 issueno = issueno.substring(issueno.indexOf('#') + 1);
 issueno++;
+while(excludeIssuesArr.indexOf(issueno)!=-1){
+  issueno++;
+}
+
 
 if(issueno>1) issue+=",";
 issue += '{';
@@ -246,7 +270,8 @@ $('.js-discussion').children().each(function () {
               var usr=$(this).find(".author").first().text();
               var tme = $(this).find('relative-time').attr('datetime');            
 
-            	if((evt=="discussion-item-changes-marker")||(evt.indexOf("form js-ajax-pagination")!=-1) || (evt.indexOf("js-timeline-progressive-focus-container")!=-1) || (evt.indexOf("details-container Details")!=-1)||(evt=="eak")||(evt.indexOf("js-socket-channel js-updatable-content")!=-1)){
+							//if(evt=="discussion-item-changes-marker")||(evt.indexOf("form js-ajax-pagination")!=-1) || (evt.indexOf("js-timeline-progressive-focus-container")!=-1) || (evt.indexOf("details-container Details")!=-1)||(evt=="eak")||(evt.indexOf("js-socket-channel js-updatable-content")!=-1) || (evt.indexOf("dge text-white bg-red")!=-1){
+							if(ignoreEvtArr.indexOf(evt)!=1){
               		// Ignore evt
               }else if(evt==""){
                 console.log(this);
