@@ -9,11 +9,11 @@
 // @grant       GM.xmlHttpRequest
 // ==/UserScript==
 
-var start=1;
-var stop=5;
+var start=101;
+var stop=1000;
 var timeoutDelay=2000;
-var dataFile="data_issues_2020_v10.js";
-const serviceUrl="http://localhost/~brom/Scrapers/write_scrape_data.php";
+var dataFile="data_issues_2020_testing.js";
+const serviceUrl="http://localhost/Scrapers/write_scrape_data.php";
 
 var ignoreEvtArr=[
   "discussion-item-changes-marker",
@@ -115,7 +115,8 @@ if(issueno>1) issue+=",";
 issue += '{';
 issue += '"issueno":"' + $('.gh-header-number').text() + '",';
 issue += '"issuetitle":"' + writeContent($('.js-issue-title').text()) + '",';
-issue += '"issueauthor":"' + writeContent($('.gh-header-meta a').text()) + '",';
+var issueAuthor=writeContent($('.gh-header-meta .author').text());
+issue += '"issueauthor":"' + issueAuthor + '",';
 
 var issuetime=$('.gh-header-meta relative-time').attr('datetime');
 if(typeof(issuetime) == "undefined"){
@@ -132,15 +133,25 @@ var iii = 0;
 var backuptime="UNK";
 $('.TimelineItem').each(function (i,tl) {
   	var tme = $(tl).find('relative-time').attr('datetime'); 
+  	if(!tme){
+       tme=issuetime;
+    }
   	var usr=$(tl).find(".author").first().text();
-    var evtDescription=$(tl).find(".author")[0].nextSibling.textContent.trim().split(' ')[0];
+  	if(usr==""){
+       usr=issueAuthor;
+    }
+    var evtDescription=$(tl).find(".author").first()[0];
+    if(evtDescription){      
+      //alert(evtDescription.nextSibling.textContent.trim().split(' ')[0])
+      evtDescription=evtDescription.nextSibling.textContent.trim().split(' ')[0];
+    }
   	var evt="UNK";
   	var svg=$(tl).find("svg");
   	if(svg){
       	svg=svg[0];
         evt=svg.getAttribute("class");
         evt=evt.substring(evt.indexOf("octicon-")+8)
-        if(evtDescription!=""){
+        if(evtDescription && evtDescription!=""){
            evt+="-"+evtDescription;
         }
         evt=evt.trim();       
@@ -148,7 +159,7 @@ $('.TimelineItem').each(function (i,tl) {
   	
     //alert(i+":"+evt+":"+tme+":"+usr+":"+evtDescription)
   
-    if((evt=="UNK")){
+    if((evt=="UNK")||evt=="circle-slash"){
       // Ignore evt
     }else if(evt==""){
       var txt=writeContent($(this).find(".discussion-item-ref-title").first().text());
@@ -180,15 +191,20 @@ $('.TimelineItem').each(function (i,tl) {
       issue+=writeEvent(i,tme,usr,"unlabeled",lbl);
     }else if(/*evt=="discussion-item-closed"*/ evt=="circle-slash-closed"){
       issue+=writeEvent(i,tme,usr,"closed","UNK");
-    }else if(evt=="discussion-commits"){
-      var commits=$(this).find(".commit-id").text();
-      issue+=writeEvent(iii,tme,usr,"commit",commits);
+    }else if(/*evt=="discussion-commits"*/ evt=="git-commit"){
+      //var commits=$(this).find(".commit-id").text();
+      var commits=$(tl).find("code a").first().attr("href");
+      commits=commits.substring(commits.lastIndexOf("/")+1)
+      issue+=writeEvent(i,tme,usr,"commit",commits);
     }else if(evt=="discussion-item-head_ref_deleted"){ 
       var txt=writeContent($(this).find("h3").first().text());
       issue+=writeEvent(iii,tme,usr,"deleted",txt);
-    }else if(evt=="discussion-item-milestoned"){ 
-      var txt=writeContent($(this).find("h3").first().text());
-      issue+=writeEvent(iii,tme,usr,"milestone",txt);
+    }else if(/*evt=="discussion-item-milestoned"*/ evt=="milestone-added"){ 
+      var txt=writeContent($(tl).find(".TimelineItem-body").first().text());
+      issue+=writeEvent(i,tme,usr,"milestone",txt);
+    }else if(evt=="milestone-modified"){ 
+      var txt=writeContent($(tl).find(".TimelineItem-body").first().text());
+      issue+=writeEvent(i,tme,usr,"milestonemodified",txt);
     }else if(evt=="discussion-item-demilestoned"){ 
       var txt=writeContent($(this).find("h3").first().text());
       issue+=writeEvent(iii,tme,usr,"demilestone",txt);
@@ -198,9 +214,10 @@ $('.TimelineItem').each(function (i,tl) {
     }else if(evt=="discussion-item-head_ref_restored"){ 
       var txt=writeContent($(this).find("h3").first().text());
       issue+=writeEvent(iii,tme,usr,"restored",txt);
-    }else if(evt=="discussion-item-reopened"){ 
-      var txt=writeContent($(this).find("h3").first().text());
-      issue+=writeEvent(iii,tme,usr,"reopened",txt);
+    }else if(/*evt=="discussion-item-reopened"*/ evt=="dot-fill-reopened"){ 
+      //var txt=$(tl).find(".TimelineItem-body").first().text().replace(/\s{2,}/g,' ').replace(/\n/g,' ');
+      var txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"reopened",writeContent(txt));
     }else if(evt=="discussion-item-review_requested"){ 
       var txt=writeContent($(this).find("h3").first().text());
       issue+=writeEvent(iii,tme,usr,"reviewrequest",txt);
@@ -210,15 +227,18 @@ $('.TimelineItem').each(function (i,tl) {
     }else if(evt=="discussion-item-review_request_removed"){ 
       var txt=writeContent($(this).find("h3").first().text());
       issue+=writeEvent(iii,tme,usr,"reviewremoved",txt);
-    }else if(evt.indexOf("discussion-item-merged")!=-1){ 
-      var txt=writeContent($(this).find("h3").first().text());
-      issue+=writeEvent(iii,tme,usr,"merged",txt);
+    }else if(/*evt.indexOf("discussion-item-merged")!=-1*/ evt=="git-merge-merged"){ 
+      //var txt=$(tl).find(".TimelineItem-body").first().text().replace(/\s{2,}/g,' ').replace(/\n/g,' ');
+      var txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"merged",writeContent(txt));
     }else if(/*evt.indexOf("discussion-item-added_to_project")!=-1*/ evt=="project-added"){ 
-      var txt=$(tl).find(".TimelineItem-body").first().text().replace(/\s{2,}/g,' ').replace(/\n/g,'');;
-      issue+=writeEvent(i,tme,usr,"addedto",txt);
+      //var txt=$(tl).find(".TimelineItem-body").first().text().replace(/\s{2,}/g,' ').replace(/\n/g,'');;
+      var txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"addedto",writeContent(txt));
     }else if(/*evt.indexOf("discussion-item-moved_columns_in_project")!=-1*/ evt=="project-moved"){ 
-      var txt=$(tl).find(".TimelineItem-body").first().text().replace(/\s{2,}/g,' ').replace(/\n/g,'');
-      issue+=writeEvent(i,tme,usr,"movedcolumns",txt);
+      //var txt=$(tl).find(".TimelineItem-body").first().text().replace(/\s{2,}/g,' ').replace(/\n/g,'');
+      var txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"movedcolumns",writeContent(txt));
     }else if(evt.indexOf("review mt-0")!=-1){ 
       var txt=writeContent($(this).find("h3").first().text());
       issue+=writeEvent(iii,tme,usr,"reviewresult",txt);
@@ -240,19 +260,40 @@ $('.TimelineItem').each(function (i,tl) {
     }else if(evt.indexOf("header f5")!=-1){ 
       var txt=writeContent($(this).find("h3").first().text());
       issue+=writeEvent(iii,tme,usr,"header",txt);		
-    }else if(evt=="bookmark-linked"){       
-      // TODO: what txt should we add?
-      var txt="";
-      issue+=writeEvent(i,tme,usr,"pullrequestlinked",txt);		
+    }
+  	//
+  	// New? events
+  	//
+  	else if(evt=="bookmark-linked"){       
+      var txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"pullrequestlinked",writeContent(txt));		
     }else if(evt=="cross-reference-added"){       
-      var txt=$(tl).find(".TimelineItem-body").first().text().replace(/\s{2,}/g,' ').replace(/\n/g,'');
-      issue+=writeEvent(i,tme,usr,"mentionedissue",txt);		
+      var txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"mentionedissue",writeContent(txt));		
     }else if(evt=="cross-reference-mentioned"){       
-      var txt=$(tl).find(".TimelineItem-body").first().text().replace(/\s{2,}/g,' ').replace(/\n/g,'');
-      issue+=writeEvent(i,tme,usr,"mentionedissue",txt);		
+      var txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"mentionedissue",writeContent(txt));		
+    }else if(evt=="cross-reference-pushed"){       
+      var txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"crossreferencepushed",writeContent(txt));		
     }else if(evt=="cross-reference-referenced"){       
-      var txt=$(tl).find(".TimelineItem-body").first().text().replace(/\s{2,}/g,' ').replace(/\n/g,'');
-      issue+=writeEvent(i,tme,usr,"mentionedissue",txt);		
+      var txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"mentionedissue",writeContent(txt));		
+    }else if(evt=="cross-reference"){       
+      var txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"crossreference",writeContent(txt));	// Found in issue #141		
+    }else if(evt=="git-branch-deleted"){       
+      var txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"branchdeleted",writeContent(txt));		
+    }else if(evt=="pencil-changed"){       
+      var txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"pencilchanged",writeContent(txt));		
+    }else if(evt=="repo-push-added"){       
+      var txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"repopushadded",writeContent(txt));		// Found in issue #30
+    }else if(evt=="repo-push-and"){       
+      var txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"repopushand",writeContent(txt));		// Found in issue #54
     }else{
       alert("Unknown Event: "+evt+"\n\n"+tl.innerHTML);              
     }
