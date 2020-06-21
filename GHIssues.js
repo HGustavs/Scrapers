@@ -9,10 +9,16 @@
 // @grant       GM.xmlHttpRequest
 // ==/UserScript==
 
+var timeoutDelay=2000;
+
 var start=101;
 var stop=1000;
-var timeoutDelay=2000;
-var dataFile="data_issues_2020_testing.js";
+var year=2020;
+var week=10;
+var suffix="testing";
+var dataFile="data_issues_"+year+"_v"+week+"_"+start+"-"+stop
+if(suffix!="")dataFile+="_"+suffix;
+dataFile+=".js";
 const serviceUrl="http://localhost/Scrapers/write_scrape_data.php";
 
 var ignoreEvtArr=[
