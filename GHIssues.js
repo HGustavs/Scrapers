@@ -1,4 +1,4 @@
-// ==UserScript==
+    // ==UserScript==
 // @name        Issue_Scraper_Script
 // @namespace   toddlerK
 // @description Jajjamensan!
@@ -8,18 +8,20 @@
 // @version     1
 // @grant       GM.xmlHttpRequest
 // ==/UserScript==
+var $ = window.jQuery;
+var req=null;
+var timeout=null;
+var timeoutDelay=4000;
 
-var timeoutDelay=2000;
-
-var start=101;
-var stop=1000;
+var start=2001;
+var stop=3000;
 var year=2020;
 var week=10;
-var suffix="testing";
+var suffix="20200621";
 var dataFile="data_issues_"+year+"_v"+week+"_"+start+"-"+stop
 if(suffix!="")dataFile+="_"+suffix;
 dataFile+=".js";
-const serviceUrl="http://localhost/Scrapers/write_scrape_data.php";
+const serviceUrl="https://wwwlab.iit.his.se/brom/Scrapers/write_scrape_data.php";
 
 var ignoreEvtArr=[
   "discussion-item-changes-marker",
@@ -33,25 +35,31 @@ var ignoreEvtArr=[
 ];
 
 var excludeIssuesArr=[5919];
+var issue = '';
+var issueno = '';
+
+function response(response) {
+
+        if(issueno<=start || issueno>stop){
+          alert("Done scraping! The data is collected in "+dataFile)
+        }else{
+            req.abort();
+        	timeout=setTimeout(function(){clearTimeout(timeout); window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno; }, timeoutDelay+Math.floor(Math.random()*1000));
+        	//window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno;
+        }
+}
 
 function ajaxCall(data) {
   try {
-    GM.xmlHttpRequest({
+      req=GM.xmlHttpRequest({
       method: 'POST',
       url: serviceUrl,
       data: 'fname='+dataFile+'&str=' + encodeURIComponent(data),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-      onload: function (response) {
-        //console.log('Success!');
-        if(issueno<=start || issueno>stop){
-          alert("Done scraping! The data is collected in "+dataFile)
-        }else{
-        	setTimeout(function(){ window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno; }, timeoutDelay+Math.floor(Math.random()*1000));
-        	//window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno;
-        }
-      }
+      onload: response
+
     });
   } catch (ex1) {
     console.log(ex1);
@@ -59,18 +67,18 @@ function ajaxCall(data) {
 }
 function writeContent(strr)
 {
-  strr = $.trim(strr);
-  strr = strr.replace(/</g, '__');  
-  strr = strr.replace(/>/g, '**');  
-  strr = strr.replace(/\//g, '');  
-  strr = strr.replace(/\\/g, '');  
-  strr = strr.replace(/{/g, '');  
-  strr = strr.replace(/}/g, '');  
-  strr = strr.replace(/"/g, '');
-  strr = strr.replace(/'/g, '');
-  strr = strr.replace(/\s/g, ' ');
-  strr = strr.replace(/\s+/g, ' ');
-	strr = strr.replace(/\(/g,' ');
+    strr = $.trim(strr);
+    strr = strr.replace(/</g, '__');
+    strr = strr.replace(/>/g, '**');
+    strr = strr.replace(/\//g, '');
+    strr = strr.replace(/\\/g, '');
+    strr = strr.replace(/{/g, '');
+    strr = strr.replace(/}/g, '');
+    strr = strr.replace(/"/g, '');
+    strr = strr.replace(/'/g, '');
+    strr = strr.replace(/\s/g, ' ');
+    strr = strr.replace(/\s+/g, ' ');
+    strr = strr.replace(/\(/g,' ');
 	strr = strr.replace(/\)/g,' ');
 	strr = strr.replace(/\,/g,' ');
   return strr;
@@ -78,24 +86,28 @@ function writeContent(strr)
 
 function writeEvent(iii,etime,evauth,kind,text)
 {
-  		var ev="";    
-  
+  		var ev="";
+
   		// Add commas if we have an event and it is not the first one
       if (iii != 0) ev += ',';
 
       ev += "{";
       ev += '"time":"' + etime + '",';
       ev += '"eventauthor":"' + evauth + '",';
-      ev += '"text":"' + text +'",';  
+      ev += '"text":"' + text +'",';
       ev += '"kind":"' + kind + '"';
     	ev += "}";
-  
+
   		//alert(ev);
   		return ev;
-  
+
 }
 
-// Test cases: 
+
+(function() {
+    'use strict';
+
+// Test cases:
 // Issue 19 - Reopen and Edit
 // Issue 21 - multiple tags and person assignment.
 // Finished: Tag / Closed / Reopened
@@ -106,8 +118,6 @@ function writeEvent(iii,etime,evauth,kind,text)
 // alert($('.gh-header-meta a').text());
 // alert($('.gh-header-meta relative-time').attr('datetime'));
 
-var issue = '';
-var issueno = '';
 $('.sticky-content').html("");
 issueno = $('.gh-header-number').text();
 issueno = issueno.substring(issueno.indexOf('#') + 1);
@@ -138,7 +148,7 @@ issue += '"events":[';
 var iii = 0;
 var backuptime="UNK";
 $('.TimelineItem').each(function (i,tl) {
-  	var tme = $(tl).find('relative-time').attr('datetime'); 
+  	var tme = $(tl).find('relative-time').attr('datetime');
   	if(!tme){
        tme=issuetime;
     }
@@ -147,7 +157,7 @@ $('.TimelineItem').each(function (i,tl) {
        usr=issueAuthor;
     }
     var evtDescription=$(tl).find(".author").first()[0];
-    if(evtDescription){      
+    if(evtDescription){
       //alert(evtDescription.nextSibling.textContent.trim().split(' ')[0])
       evtDescription=evtDescription.nextSibling.textContent.trim().split(' ')[0];
     }
@@ -160,11 +170,11 @@ $('.TimelineItem').each(function (i,tl) {
         if(evtDescription && evtDescription!=""){
            evt+="-"+evtDescription;
         }
-        evt=evt.trim();       
+        evt=evt.trim();
     }
-  	
+
     //alert(i+":"+evt+":"+tme+":"+usr+":"+evtDescription)
-  
+
     if((evt=="UNK")||evt=="circle-slash"){
       // Ignore evt
     }else if(evt==""){
@@ -172,169 +182,169 @@ $('.TimelineItem').each(function (i,tl) {
       if(usr!=""){
         issue+=writeEvent(iii,tme,usr,"referenced",txt);
       }
-    }else if(evt=="kebab-horizontal"){      
-      var txt=writeContent($(this).find(".comment-body").first().text());
+    }else if(evt=="kebab-horizontal"){
+      let txt=writeContent($(this).find(".comment-body").first().text());
       issue+=writeEvent(i,tme,usr,"comment",txt);
     }else if(/*evt=="discussion-item-assigned"*/ evt=="person-assigned"){
-      var asr=$(tl).find(".author").next().text();								
+      let asr=$(tl).find(".author").next().text();
       issue+=writeEvent(i,tme,usr,"assigned",asr);
     }else if(/*evt=="discussion-item-assigned"*/ evt=="person-self-assigned"){
-      var asr=$(tl).find(".author").next().text();								
+      let asr=$(tl).find(".author").next().text();
       issue+=writeEvent(i,tme,usr,"selfassigned",asr);
     }else if(/*evt=="discussion-item-unassigned"*/ evt=="person-unassigned"){
       //var usr=$(this).find(".author").first().text();
-      var asr=$(tl).find(".author").next().text();								
+      let asr=$(tl).find(".author").next().text();
       issue+=writeEvent(i,tme,usr,"unassigned",asr);
     }else if(/*evt=="discussion-item-unassigned"*/ evt=="person-removed"){
       //var usr=$(this).find(".author").first().text();
-      var asr=$(tl).find(".author").next().text();								
+      let asr=$(tl).find(".author").next().text();
       issue+=writeEvent(i,tme,usr,"removedselfassigned",asr);
-    }else if(/*evt=="discussion-item-labeled"*/  evt=="tag-added"){
-      var lbl=writeContent($(tl).find(".IssueLabel").first().text());
+    }else if(/*evt=="discussion-item-labeled"*/ evt=="tag-added"){
+      let lbl=writeContent($(tl).find(".IssueLabel").first().text());
       issue+=writeEvent(i,tme,usr,"labeled",lbl);
     }else if(/*evt=="discussion-item-unlabeled"*/ evt=="tag-removed"){
-      var lbl=writeContent($(tl).find(".IssueLabel").first().text());
+      let lbl=writeContent($(tl).find(".IssueLabel").first().text());
       issue+=writeEvent(i,tme,usr,"unlabeled",lbl);
     }else if(/*evt=="discussion-item-closed"*/ evt=="circle-slash-closed"){
       issue+=writeEvent(i,tme,usr,"closed","UNK");
     }else if(/*evt=="discussion-commits"*/ evt=="git-commit"){
       //var commits=$(this).find(".commit-id").text();
-      var commits=$(tl).find("code a").first().attr("href");
+      let commits=$(tl).find("code a").first().attr("href");
       commits=commits.substring(commits.lastIndexOf("/")+1)
       issue+=writeEvent(i,tme,usr,"commit",commits);
-    }else if(evt=="discussion-item-head_ref_deleted"){ 
-      var txt=writeContent($(this).find("h3").first().text());
+    }else if(evt=="discussion-item-head_ref_deleted"){
+      let txt=writeContent($(this).find("h3").first().text());
       issue+=writeEvent(iii,tme,usr,"deleted",txt);
-    }else if(/*evt=="discussion-item-milestoned"*/ evt=="milestone-added"){ 
-      var txt=writeContent($(tl).find(".TimelineItem-body").first().text());
+    }else if(/*evt=="discussion-item-milestoned"*/ evt=="milestone-added"){
+      let txt=writeContent($(tl).find(".TimelineItem-body").first().text());
       issue+=writeEvent(i,tme,usr,"milestone",txt);
-    }else if(evt=="milestone-modified"){ 
-      var txt=writeContent($(tl).find(".TimelineItem-body").first().text());
+    }else if(evt=="milestone-modified"){
+      let txt=writeContent($(tl).find(".TimelineItem-body").first().text());
       issue+=writeEvent(i,tme,usr,"milestonemodified",txt);
     }else if(/*evt=="discussion-item-demilestoned"*/ evt=="milestone-removed"){ // Found in issue #470
-			var txt=writeContent($(tl).find(".TimelineItem-body").first().text());
-      issue+=writeEvent(iii,tme,usr,"demilestone",txt);
-    }else if(evt=="discussion-item-renamed"){ 
-      var txt=writeContent($(this).find("h3").first().text());
+        let txt=writeContent($(tl).find(".TimelineItem-body").first().text());
+        issue+=writeEvent(iii,tme,usr,"demilestone",txt);
+    }else if(evt=="discussion-item-renamed"){
+      let txt=writeContent($(this).find("h3").first().text());
       issue+=writeEvent(iii,tme,usr,"renamed",txt);
-    }else if(evt=="discussion-item-head_ref_restored"){ 
-      var txt=writeContent($(this).find("h3").first().text());
+    }else if(evt=="discussion-item-head_ref_restored"){
+      let txt=writeContent($(this).find("h3").first().text());
       issue+=writeEvent(iii,tme,usr,"restored",txt);
-    }else if(/*evt=="discussion-item-reopened"*/ evt=="dot-fill-reopened"){ 
+    }else if(/*evt=="discussion-item-reopened"*/ evt=="dot-fill-reopened"){
       //var txt=$(tl).find(".TimelineItem-body").first().text().replace(/\s{2,}/g,' ').replace(/\n/g,' ');
-      var txt=$(tl).find(".TimelineItem-body").first().text();
+      let txt=$(tl).find(".TimelineItem-body").first().text();
       issue+=writeEvent(i,tme,usr,"reopened",writeContent(txt));
-    }else if(evt=="discussion-item-review_requested"){ 
-      var txt=writeContent($(this).find("h3").first().text());
+    }else if(evt=="discussion-item-review_requested"){
+      let txt=writeContent($(this).find("h3").first().text());
       issue+=writeEvent(iii,tme,usr,"reviewrequest",txt);
-    }else if(evt=="discussion-item-base_ref_changed"){ 
-      var txt=writeContent($(this).find("h3").first().text());
+    }else if(evt=="discussion-item-base_ref_changed"){
+      let txt=writeContent($(this).find("h3").first().text());
       issue+=writeEvent(iii,tme,usr,"refchanged",txt);
-    }else if(evt=="discussion-item-review_request_removed"){ 
-      var txt=writeContent($(this).find("h3").first().text());
+    }else if(evt=="discussion-item-review_request_removed"){
+      let txt=writeContent($(this).find("h3").first().text());
       issue+=writeEvent(iii,tme,usr,"reviewremoved",txt);
-    }else if(/*evt.indexOf("discussion-item-merged")!=-1*/ evt=="git-merge-merged"){ 
+    }else if(/*evt.indexOf("discussion-item-merged")!=-1*/ evt=="git-merge-merged"){
       //var txt=$(tl).find(".TimelineItem-body").first().text().replace(/\s{2,}/g,' ').replace(/\n/g,' ');
-      var txt=$(tl).find(".TimelineItem-body").first().text();
+      let txt=$(tl).find(".TimelineItem-body").first().text();
       issue+=writeEvent(i,tme,usr,"merged",writeContent(txt));
-    }else if(/*evt.indexOf("discussion-item-added_to_project")!=-1*/ evt=="project-added"){ 
+    }else if(/*evt.indexOf("discussion-item-added_to_project")!=-1*/ evt=="project-added"){
       //var txt=$(tl).find(".TimelineItem-body").first().text().replace(/\s{2,}/g,' ').replace(/\n/g,'');;
-      var txt=$(tl).find(".TimelineItem-body").first().text();
+      let txt=$(tl).find(".TimelineItem-body").first().text();
       issue+=writeEvent(i,tme,usr,"addedto",writeContent(txt));
-    }else if(/*evt.indexOf("discussion-item-moved_columns_in_project")!=-1*/ evt=="project-moved"){ 
+    }else if(/*evt.indexOf("discussion-item-moved_columns_in_project")!=-1*/ evt=="project-moved"){
       //var txt=$(tl).find(".TimelineItem-body").first().text().replace(/\s{2,}/g,' ').replace(/\n/g,'');
-      var txt=$(tl).find(".TimelineItem-body").first().text();
+      let txt=$(tl).find(".TimelineItem-body").first().text();
       issue+=writeEvent(i,tme,usr,"movedcolumns",writeContent(txt));
-    }else if(evt.indexOf("review mt-0")!=-1){ 
-      var txt=writeContent($(this).find("h3").first().text());
+    }else if(evt.indexOf("review mt-0")!=-1){
+      let txt=writeContent($(this).find("h3").first().text());
       issue+=writeEvent(iii,tme,usr,"reviewresult",txt);
-    }else if(evt.indexOf("discussion-item-base_ref_force_pushed")!=-1){ 
-      var txt=writeContent($(this).find("h3").first().text());
+    }else if(evt.indexOf("discussion-item-base_ref_force_pushed")!=-1){
+      let txt=writeContent($(this).find("h3").first().text());
       issue+=writeEvent(iii,tme,usr,"forcepush",txt);
-    }else if(evt.indexOf("discussion-item-removed_from_project")!=-1){ 
-      var txt=writeContent($(this).find("h3").first().text());
-      issue+=writeEvent(iii,tme,usr,"removed",txt);								
-    }else if(evt.indexOf("discussion-item-head_ref_force_pushed")!=-1){ 
-      var txt=writeContent($(this).find("h3").first().text());
-      issue+=writeEvent(iii,tme,usr,"forcepush",txt);					
-    }else if(evt.indexOf("discussion-item-comment_deleted")!=-1){ 
-      var txt=writeContent($(this).find("h3").first().text());
-      issue+=writeEvent(iii,tme,usr,"delcomment",txt);	
-    }else if(evt.indexOf("discussion-item-ready_for_review")!=-1){ 
-      var txt=writeContent($(this).find("h3").first().text());
-      issue+=writeEvent(iii,tme,usr,"reviewready",txt);								
-    }else if(evt.indexOf("header f5")!=-1){ 
-      var txt=writeContent($(this).find("h3").first().text());
-      issue+=writeEvent(iii,tme,usr,"header",txt);		
+    }else if(evt.indexOf("discussion-item-removed_from_project")!=-1){
+      let txt=writeContent($(this).find("h3").first().text());
+      issue+=writeEvent(iii,tme,usr,"removed",txt);
+    }else if(evt.indexOf("discussion-item-head_ref_force_pushed")!=-1){
+      let txt=writeContent($(this).find("h3").first().text());
+      issue+=writeEvent(iii,tme,usr,"forcepush",txt);
+    }else if(evt.indexOf("discussion-item-comment_deleted")!=-1){
+      let txt=writeContent($(this).find("h3").first().text());
+      issue+=writeEvent(iii,tme,usr,"delcomment",txt);
+    }else if(evt.indexOf("discussion-item-ready_for_review")!=-1){
+      let txt=writeContent($(this).find("h3").first().text());
+      issue+=writeEvent(iii,tme,usr,"reviewready",txt);
+    }else if(evt.indexOf("header f5")!=-1){
+      let txt=writeContent($(this).find("h3").first().text());
+      issue+=writeEvent(iii,tme,usr,"header",txt);
     }
   	//
   	// New? events
   	//
-  	else if(evt=="bookmark-linked"){       
-      var txt=$(tl).find(".TimelineItem-body").first().text();
-      issue+=writeEvent(i,tme,usr,"pullrequestlinked",writeContent(txt));		
-    }else if(evt=="cross-reference-added"){       
-      var txt=$(tl).find(".TimelineItem-body").first().text();
-      issue+=writeEvent(i,tme,usr,"mentionedissue",writeContent(txt));		
-    }else if(evt=="cross-reference-mentioned"){       
-      var txt=$(tl).find(".TimelineItem-body").first().text();
-      issue+=writeEvent(i,tme,usr,"mentionedissue",writeContent(txt));		
-    }else if(evt=="cross-reference-pushed"){       
-      var txt=$(tl).find(".TimelineItem-body").first().text();
-      issue+=writeEvent(i,tme,usr,"crossreferencepushed",writeContent(txt));		
-    }else if(evt=="cross-reference-referenced"){       
-      var txt=$(tl).find(".TimelineItem-body").first().text();
-      issue+=writeEvent(i,tme,usr,"mentionedissue",writeContent(txt));		
-    }else if(evt=="cross-reference"){       
-      var txt=$(tl).find(".TimelineItem-body").first().text();
-      issue+=writeEvent(i,tme,usr,"crossreference",writeContent(txt));	// Found in issue #141		
-    }else if(evt=="git-branch-deleted"){       
-      var txt=$(tl).find(".TimelineItem-body").first().text();
-      issue+=writeEvent(i,tme,usr,"branchdeleted",writeContent(txt));		
-    }else if(evt=="pencil-changed"){       
-      var txt=$(tl).find(".TimelineItem-body").first().text();
-      issue+=writeEvent(i,tme,usr,"pencilchanged",writeContent(txt));		
-    }else if(evt=="repo-push-added"){       
-      var txt=$(tl).find(".TimelineItem-body").first().text();
+  	else if(evt=="bookmark-linked"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"pullrequestlinked",writeContent(txt));
+    }else if(evt=="cross-reference-added"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"mentionedissue",writeContent(txt));
+    }else if(evt=="cross-reference-mentioned"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"mentionedissue",writeContent(txt));
+    }else if(evt=="cross-reference-pushed"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"crossreferencepushed",writeContent(txt));
+    }else if(evt=="cross-reference-referenced"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"mentionedissue",writeContent(txt));
+    }else if(evt=="cross-reference"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"crossreference",writeContent(txt));	// Found in issue #141
+    }else if(evt=="git-branch-deleted"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"branchdeleted",writeContent(txt));
+    }else if(evt=="pencil-changed"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"pencilchanged",writeContent(txt));
+    }else if(evt=="repo-push-added"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
       issue+=writeEvent(i,tme,usr,"repopushadded",writeContent(txt));		// Found in issue #30
-    }else if(evt=="repo-push-and"){       
-      var txt=$(tl).find(".TimelineItem-body").first().text();
+    }else if(evt=="repo-push-and"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
       issue+=writeEvent(i,tme,usr,"repopushand",writeContent(txt));		// Found in issue #54
-    }else if(evt=="project"){       
-      var txt=$(tl).find(".TimelineItem-body").first().text();
+    }else if(evt=="project"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
       issue+=writeEvent(i,tme,usr,"project",writeContent(txt));		// Found in issue #465
-    }else if(evt=="project-removed"){       
-      var txt=$(tl).find(".TimelineItem-body").first().text();
+    }else if(evt=="project-removed"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
       issue+=writeEvent(i,tme,usr,"projectremoved",writeContent(txt));		// Found in issue #496
-    }else if(evt=="git-branch-restored"){       
-      var txt=$(tl).find(".TimelineItem-body").first().text();
+    }else if(evt=="git-branch-restored"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
       issue+=writeEvent(i,tme,usr,"gitbranchrestored",writeContent(txt));		// Found in issue #575
-    }else if(evt=="smiley"){       
-      var txt=$(tl).find(".TimelineItem-body").first().text();
+    }else if(evt=="smiley"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
       issue+=writeEvent(i,tme,usr,"smiley",writeContent(txt));		// Found in issue #704
-    }else if(evt=="unfold position-relative mr-1"){       
-      var txt=$(tl).find(".TimelineItem-body").first().text();
+    }else if(evt=="unfold position-relative mr-1"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
       issue+=writeEvent(i,tme,usr,"unfold",writeContent(txt));		// Found in issue #712
-    }else if(evt=="eye"){       
-      var txt=$(tl).find(".TimelineItem-body").first().text();
+    }else if(evt=="eye"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
       issue+=writeEvent(i,tme,usr,"eye",writeContent(txt));		// Found in issue #891
-    }else if(evt=="fold"){       
-      var txt=$(tl).find(".TimelineItem-body").first().text();
+    }else if(evt=="fold"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
       issue+=writeEvent(i,tme,usr,"fold",writeContent(txt));		// Found in pull #891
     }else{
-      alert("Unknown Event: "+evt+"\n\n"+tl.innerHTML);              
-    }  
+      alert("Unknown Event: "+evt+"\n\n"+tl.innerHTML);
+    }
 });
 
 /*
 $('.js-discussion').children().each(function () {
-  
+
   var cls=this.className;
-  
+
   if((this.id=="js-timeline-progressive-loader")||(cls.indexOf("js-timeline-marker")!=-1)){
   		// alert("irrelevant! "+cls);
   }else if(cls.indexOf(("js-timeline-item")!=-1)||(cls.indexOf("js-comment-container")!=-1)){
-    
+
     	var etime = $(this).find('relative-time').attr('datetime');
       var evauth = $(this).find('.author').first().text();
       if(typeof(etime) == "undefined"){
@@ -342,7 +352,7 @@ $('.js-discussion').children().each(function () {
       }else{
       		backuptime=etime;
       }
-        
+
   		if($(this).find("*").hasClass('js-comment-body')){
         	var ctext=writeContent($(this).find(".markdown-body").first().text());
           iii++;
@@ -352,7 +362,7 @@ $('.js-discussion').children().each(function () {
             	iii++;
 							var evt=this.className.substring(this.className.indexOf("discussion-item")+16);
               var usr=$(this).find(".author").first().text();
-              var tme = $(this).find('relative-time').attr('datetime');            
+              var tme = $(this).find('relative-time').attr('datetime');
 
 							//if(evt=="discussion-item-changes-marker")||(evt.indexOf("form js-ajax-pagination")!=-1) || (evt.indexOf("js-timeline-progressive-focus-container")!=-1) || (evt.indexOf("details-container Details")!=-1)||(evt=="eak")||(evt.indexOf("js-socket-channel js-updatable-content")!=-1) || (evt.indexOf("dge text-white bg-red")!=-1){
 							if(ignoreEvtArr.indexOf(evt)!=1){
@@ -364,11 +374,11 @@ $('.js-discussion').children().each(function () {
                   issue+=writeEvent(iii,tme,usr,"referenced",txt);
                 }
               }else if(evt=="discussion-item-assigned"){
-									var asr=$(this).find(".author").eq(1).text();								
+									var asr=$(this).find(".author").eq(1).text();
                 	issue+=writeEvent(iii,tme,usr,"assigned",asr);
                }else if(evt=="discussion-item-unassigned"){
 									var usr=$(this).find(".author").first().text();
-									var asr=$(this).find(".author").eq(1).text();								
+									var asr=$(this).find(".author").eq(1).text();
                 	issue+=writeEvent(iii,tme,usr,"unassigned",asr);
               }else if(evt=="discussion-item-labeled"){
 									var lbl=writeContent($(this).find(".IssueLabel").first().text());
@@ -381,74 +391,74 @@ $('.js-discussion').children().each(function () {
               }else if(evt=="discussion-commits"){
                 	var commits=$(this).find(".commit-id").text();
 									issue+=writeEvent(iii,tme,usr,"commit",commits);
-              }else if(evt=="discussion-item-head_ref_deleted"){ 
+              }else if(evt=="discussion-item-head_ref_deleted"){
 									var txt=writeContent($(this).find("h3").first().text());
                 	issue+=writeEvent(iii,tme,usr,"deleted",txt);
-              }else if(evt=="discussion-item-milestoned"){ 
+              }else if(evt=="discussion-item-milestoned"){
 									var txt=writeContent($(this).find("h3").first().text());
                 	issue+=writeEvent(iii,tme,usr,"milestone",txt);
-              }else if(evt=="discussion-item-demilestoned"){ 
+              }else if(evt=="discussion-item-demilestoned"){
 									var txt=writeContent($(this).find("h3").first().text());
                 	issue+=writeEvent(iii,tme,usr,"demilestone",txt);
-              }else if(evt=="discussion-item-renamed"){ 
+              }else if(evt=="discussion-item-renamed"){
 									var txt=writeContent($(this).find("h3").first().text());
                 	issue+=writeEvent(iii,tme,usr,"renamed",txt);
-              }else if(evt=="discussion-item-head_ref_restored"){ 
+              }else if(evt=="discussion-item-head_ref_restored"){
 									var txt=writeContent($(this).find("h3").first().text());
                 	issue+=writeEvent(iii,tme,usr,"restored",txt);
-              }else if(evt=="discussion-item-reopened"){ 
+              }else if(evt=="discussion-item-reopened"){
 									var txt=writeContent($(this).find("h3").first().text());
                 	issue+=writeEvent(iii,tme,usr,"reopened",txt);
-              }else if(evt=="discussion-item-review_requested"){ 
+              }else if(evt=="discussion-item-review_requested"){
 									var txt=writeContent($(this).find("h3").first().text());
                 	issue+=writeEvent(iii,tme,usr,"reviewrequest",txt);
-              }else if(evt=="discussion-item-base_ref_changed"){ 
+              }else if(evt=="discussion-item-base_ref_changed"){
 									var txt=writeContent($(this).find("h3").first().text());
                 	issue+=writeEvent(iii,tme,usr,"refchanged",txt);
-              }else if(evt=="discussion-item-review_request_removed"){ 
+              }else if(evt=="discussion-item-review_request_removed"){
 									var txt=writeContent($(this).find("h3").first().text());
                 	issue+=writeEvent(iii,tme,usr,"reviewremoved",txt);
-							}else if(evt.indexOf("discussion-item-merged")!=-1){ 
+							}else if(evt.indexOf("discussion-item-merged")!=-1){
 									var txt=writeContent($(this).find("h3").first().text());
                 	issue+=writeEvent(iii,tme,usr,"merged",txt);
-							}else if(evt.indexOf("discussion-item-added_to_project")!=-1){ 
+							}else if(evt.indexOf("discussion-item-added_to_project")!=-1){
 									var txt=writeContent($(this).find("h3").first().text());
                 	issue+=writeEvent(iii,tme,usr,"addedto",txt);
-							}else if(evt.indexOf("discussion-item-moved_columns_in_project")!=-1){ 
+							}else if(evt.indexOf("discussion-item-moved_columns_in_project")!=-1){
 									var txt=writeContent($(this).find("h3").first().text());
                 	issue+=writeEvent(iii,tme,usr,"movedcolumns",txt);
-							}else if(evt.indexOf("review mt-0")!=-1){ 
+							}else if(evt.indexOf("review mt-0")!=-1){
 									var txt=writeContent($(this).find("h3").first().text());
                 	issue+=writeEvent(iii,tme,usr,"reviewresult",txt);
-							}else if(evt.indexOf("discussion-item-base_ref_force_pushed")!=-1){ 
+							}else if(evt.indexOf("discussion-item-base_ref_force_pushed")!=-1){
 									var txt=writeContent($(this).find("h3").first().text());
                 	issue+=writeEvent(iii,tme,usr,"forcepush",txt);
-							}else if(evt.indexOf("discussion-item-removed_from_project")!=-1){ 
+							}else if(evt.indexOf("discussion-item-removed_from_project")!=-1){
 									var txt=writeContent($(this).find("h3").first().text());
-                	issue+=writeEvent(iii,tme,usr,"removed",txt);								
-							}else if(evt.indexOf("discussion-item-head_ref_force_pushed")!=-1){ 
+                	issue+=writeEvent(iii,tme,usr,"removed",txt);
+							}else if(evt.indexOf("discussion-item-head_ref_force_pushed")!=-1){
 									var txt=writeContent($(this).find("h3").first().text());
-                	issue+=writeEvent(iii,tme,usr,"forcepush",txt);					
-							}else if(evt.indexOf("discussion-item-comment_deleted")!=-1){ 
+                	issue+=writeEvent(iii,tme,usr,"forcepush",txt);
+							}else if(evt.indexOf("discussion-item-comment_deleted")!=-1){
 									var txt=writeContent($(this).find("h3").first().text());
-                	issue+=writeEvent(iii,tme,usr,"delcomment",txt);	
-							}else if(evt.indexOf("discussion-item-ready_for_review")!=-1){ 
+                	issue+=writeEvent(iii,tme,usr,"delcomment",txt);
+							}else if(evt.indexOf("discussion-item-ready_for_review")!=-1){
 									var txt=writeContent($(this).find("h3").first().text());
-                	issue+=writeEvent(iii,tme,usr,"reviewready",txt);								
-							}else if(evt.indexOf("header f5")!=-1){ 
+                	issue+=writeEvent(iii,tme,usr,"reviewready",txt);
+							}else if(evt.indexOf("header f5")!=-1){
 									var txt=writeContent($(this).find("h3").first().text());
-                	issue+=writeEvent(iii,tme,usr,"header",txt);		
+                	issue+=writeEvent(iii,tme,usr,"header",txt);
 							}else{
-            			alert("Unknown Event: "+evt);              
+            			alert("Unknown Event: "+evt);
               }
 
           });
-      }  
-  
+      }
+
 
   }else{
   		alert("Other Class: "+cls);
-  }  
+  }
 
 }
 );
@@ -460,3 +470,4 @@ issue += '}\n';
 // alert(issue);
 
 ajaxCall(issue);
+})();
