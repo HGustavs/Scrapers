@@ -1,4 +1,4 @@
-891// ==UserScript==
+// ==UserScript==
 // @name        Issue_Scraper_Script
 // @namespace   toddlerK
 // @description Jajjamensan!
