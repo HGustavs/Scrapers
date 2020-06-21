@@ -1,4 +1,4 @@
-// ==UserScript==
+891// ==UserScript==
 // @name        Issue_Scraper_Script
 // @namespace   toddlerK
 // @description Jajjamensan!
@@ -211,8 +211,8 @@ $('.TimelineItem').each(function (i,tl) {
     }else if(evt=="milestone-modified"){ 
       var txt=writeContent($(tl).find(".TimelineItem-body").first().text());
       issue+=writeEvent(i,tme,usr,"milestonemodified",txt);
-    }else if(evt=="discussion-item-demilestoned"){ 
-      var txt=writeContent($(this).find("h3").first().text());
+    }else if(/*evt=="discussion-item-demilestoned"*/ evt=="milestone-removed"){ // Found in issue #470
+			var txt=writeContent($(tl).find(".TimelineItem-body").first().text());
       issue+=writeEvent(iii,tme,usr,"demilestone",txt);
     }else if(evt=="discussion-item-renamed"){ 
       var txt=writeContent($(this).find("h3").first().text());
@@ -300,10 +300,30 @@ $('.TimelineItem').each(function (i,tl) {
     }else if(evt=="repo-push-and"){       
       var txt=$(tl).find(".TimelineItem-body").first().text();
       issue+=writeEvent(i,tme,usr,"repopushand",writeContent(txt));		// Found in issue #54
+    }else if(evt=="project"){       
+      var txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"project",writeContent(txt));		// Found in issue #465
+    }else if(evt=="project-removed"){       
+      var txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"projectremoved",writeContent(txt));		// Found in issue #496
+    }else if(evt=="git-branch-restored"){       
+      var txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"gitbranchrestored",writeContent(txt));		// Found in issue #575
+    }else if(evt=="smiley"){       
+      var txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"smiley",writeContent(txt));		// Found in issue #704
+    }else if(evt=="unfold position-relative mr-1"){       
+      var txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"unfold",writeContent(txt));		// Found in issue #712
+    }else if(evt=="eye"){       
+      var txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"eye",writeContent(txt));		// Found in issue #891
+    }else if(evt=="fold"){       
+      var txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"fold",writeContent(txt));		// Found in pull #891
     }else{
       alert("Unknown Event: "+evt+"\n\n"+tl.innerHTML);              
-    }
-  
+    }  
 });
 
 /*
