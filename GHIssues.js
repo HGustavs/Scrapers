@@ -346,6 +346,18 @@ $('.TimelineItem').each(function (i,tl) {
     }else if(evt=="x-dismissed"){
       let txt=$(tl).find(".TimelineItem-body").first().text();
       issue+=writeEvent(i,tme,usr,"xdismissed",writeContent(txt));		// Found in pull #3085
+    }else if(evt=="x-removed"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"xremoved",writeContent(txt));		// Found in pull #3085
+    }else if(evt=="x-requested"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"xrequested",writeContent(txt));		// Found in pull #3085
+    }else if(evt=="bookmark-removed"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"bookmarkremoved",writeContent(txt));
+    }else if(evt=="git-branch-changed"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"git-branch-changed",writeContent(txt));
     }else{
       alert("Unknown Event: "+evt+"\n\n"+tl.innerHTML);
     }
