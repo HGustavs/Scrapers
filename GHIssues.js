@@ -343,6 +343,9 @@ $('.TimelineItem').each(function (i,tl) {
     }else if(evt=="eye-self-requested"){
       let txt=$(tl).find(".TimelineItem-body").first().text();
       issue+=writeEvent(i,tme,usr,"eyeselfrequested",writeContent(txt));		// Found in pull #3037
+    }else if(evt=="x-dismissed"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"xdismissed",writeContent(txt));		// Found in pull #3085
     }else{
       alert("Unknown Event: "+evt+"\n\n"+tl.innerHTML);
     }
