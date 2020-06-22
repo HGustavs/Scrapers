@@ -357,16 +357,19 @@ $('.TimelineItem').each(function (i,tl) {
       issue+=writeEvent(i,tme,usr,"bookmarkremoved",writeContent(txt));
     }else if(evt=="git-branch-changed"){
       let txt=$(tl).find(".TimelineItem-body").first().text();
-      issue+=writeEvent(i,tme,usr,"git-branch-changed",writeContent(txt));
+      issue+=writeEvent(i,tme,usr,"gitbranchchanged",writeContent(txt));
     }else if(evt=="repo-push"){
       let txt=$(tl).find(".TimelineItem-body").first().text();
-      issue+=writeEvent(i,tme,usr,"repo-push",writeContent(txt));
+      issue+=writeEvent(i,tme,usr,"repopush",writeContent(txt));
     }else if(evt=="x"){
       let txt=$(tl).find(".TimelineItem-body").first().text();
       issue+=writeEvent(i,tme,usr,"x",writeContent(txt));
     }else if(evt=="eye-marked"){
       let txt=$(tl).find(".TimelineItem-body").first().text();
-      issue+=writeEvent(i,tme,usr,"eye-marked",writeContent(txt));
+      issue+=writeEvent(i,tme,usr,"eyemarked",writeContent(txt));
+    }else if(evt=="bookmark-marked"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"bookmarkmarked",writeContent(txt));
     }else{
       alert("Unknown Event: "+evt+"\n\n"+tl.innerHTML);
     }
