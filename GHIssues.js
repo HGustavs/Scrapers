@@ -376,6 +376,9 @@ $('.TimelineItem').each(function (i,tl) {
     }else if(evt=="pin-pinned"){
       let txt=$(tl).find(".TimelineItem-body").first().text();
       issue+=writeEvent(i,tme,usr,"pinpinned",writeContent(txt)); // Found in pull #7847
+    }else if(evt=="project-created"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"projectcreated",writeContent(txt)); // Found in pull #9145
     }else{
       alert("Unknown Event: "+evt+"\n\n"+tl.innerHTML);
     }
