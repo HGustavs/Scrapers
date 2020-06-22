@@ -13,8 +13,8 @@ var req=null;
 var timeout=null;
 var timeoutDelay=4000;
 
-var start=3001;
-var stop=4000;
+var start=5001;
+var stop=6000;
 var year=2020;
 var week=10;
 var suffix="20200621";
@@ -358,6 +358,9 @@ $('.TimelineItem').each(function (i,tl) {
     }else if(evt=="git-branch-changed"){
       let txt=$(tl).find(".TimelineItem-body").first().text();
       issue+=writeEvent(i,tme,usr,"git-branch-changed",writeContent(txt));
+    }else if(evt=="repo-push"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"repo-push",writeContent(txt));
     }else{
       alert("Unknown Event: "+evt+"\n\n"+tl.innerHTML);
     }
