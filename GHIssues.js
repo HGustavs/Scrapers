@@ -373,6 +373,9 @@ $('.TimelineItem').each(function (i,tl) {
     }else if(evt=="bookmark"){
       let txt=$(tl).find(".TimelineItem-body").first().text();
       issue+=writeEvent(i,tme,usr,"bookmark",writeContent(txt)); // Found in pull #7400
+    }else if(evt=="pin-pinned"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"pinpinned",writeContent(txt)); // Found in pull #7847
     }else{
       alert("Unknown Event: "+evt+"\n\n"+tl.innerHTML);
     }
