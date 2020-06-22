@@ -361,6 +361,12 @@ $('.TimelineItem').each(function (i,tl) {
     }else if(evt=="repo-push"){
       let txt=$(tl).find(".TimelineItem-body").first().text();
       issue+=writeEvent(i,tme,usr,"repo-push",writeContent(txt));
+    }else if(evt=="x"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"x",writeContent(txt));
+    }else if(evt=="eye-marked"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"eye-marked",writeContent(txt));
     }else{
       alert("Unknown Event: "+evt+"\n\n"+tl.innerHTML);
     }
