@@ -370,6 +370,9 @@ $('.TimelineItem').each(function (i,tl) {
     }else if(evt=="bookmark-marked"){
       let txt=$(tl).find(".TimelineItem-body").first().text();
       issue+=writeEvent(i,tme,usr,"bookmarkmarked",writeContent(txt));
+    }else if(evt=="bookmark"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeEvent(i,tme,usr,"bookmark",writeContent(txt)); // Found in pull #7400
     }else{
       alert("Unknown Event: "+evt+"\n\n"+tl.innerHTML);
     }
