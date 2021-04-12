@@ -39,14 +39,20 @@ var issue = '';
 var issueno = '';
 
 function response(response) {
-				alert(issueno+" "+start+" "+stop);
-        if(issueno<=start || issueno>stop){
-          alert("Done scraping! The data is collected in "+dataFile)
-        }else{
-          // req.abort();
-        	timeout=setTimeout(function(){clearTimeout(timeout); window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno; }, timeoutDelay+Math.floor(Math.random()*1000));
-        	//window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno;
-        }
+    
+    issueno++;
+    while(excludeIssuesArr.indexOf(issueno)!=-1){
+        issueno++;
+    }
+    
+    alert(issueno+" "+start+" "+stop);
+    if(issueno<=start || issueno>stop){
+        alert("Done scraping! The data is collected in "+dataFile)
+    }else{
+        // req.abort();
+        //timeout=setTimeout(function(){clearTimeout(timeout); window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno; }, timeoutDelay+Math.floor(Math.random()*1000));
+        //window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno;
+    }
 }
 
 function ajaxCall(data) {
@@ -79,9 +85,9 @@ function writeContent(strr)
     strr = strr.replace(/\s/g, ' ');
     strr = strr.replace(/\s+/g, ' ');
     strr = strr.replace(/\(/g,' ');
-	strr = strr.replace(/\)/g,' ');
-	strr = strr.replace(/\,/g,' ');
-  return strr;
+	  strr = strr.replace(/\)/g,' ');
+	  strr = strr.replace(/\,/g,' ');
+    return strr;
 }
 
 function writeEvent(iii,etime,evauth,kind,text)
@@ -121,10 +127,6 @@ function writeEvent(iii,etime,evauth,kind,text)
 $('.sticky-content').html("");
 issueno = $('.gh-header-title').text();
 issueno = issueno.substring(issueno.indexOf('#') + 1);
-issueno++;
-while(excludeIssuesArr.indexOf(issueno)!=-1){
-  issueno++;
-}
   
 if(issueno>1) issue+=",";
 issue += '{';
@@ -142,7 +144,11 @@ issue += '"time":"' + issuetime + '",';
 
 var stat = writeContent($('.State').first().text());
 issue += '"state":"' + stat + '",';
-var message=($('.gh-header-meta').text());
+var message=($('.js-comment-body').first().text());
+var screenshot="["+$('.js-comment-body').first().find("img").attr("src")+"]";
+if(screenshot!="[undefined]") message+=screenshot;  
+alert(message);
+
 issue += '"message":"' + writeContent(message) + '",';
 issue += '"events":[';
 var iii = 0;
@@ -515,7 +521,7 @@ $('.js-discussion').children().each(function () {
 issue += ']';
 issue += '}\n';
 
-// alert(issue);
+ alert(issue);
 
 ajaxCall(issue);
 })();
