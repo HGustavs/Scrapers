@@ -13,10 +13,10 @@ var req=null;
 var timeout=null;
 var timeoutDelay=4000;
 
-var start=5001;
-var stop=6000;
-var year=2020;
-var week=10;
+var start=1;
+var stop=1000;
+var year=2021;
+var week=1;
 var suffix="20200621";
 var dataFile="data_issues_"+year+"_v"+week+"_"+start+"-"+stop
 if(suffix!="")dataFile+="_"+suffix;
@@ -39,11 +39,11 @@ var issue = '';
 var issueno = '';
 
 function response(response) {
-
+				alert(issueno+" "+start+" "+stop);
         if(issueno<=start || issueno>stop){
           alert("Done scraping! The data is collected in "+dataFile)
         }else{
-            req.abort();
+          // req.abort();
         	timeout=setTimeout(function(){clearTimeout(timeout); window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno; }, timeoutDelay+Math.floor(Math.random()*1000));
         	//window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno;
         }
@@ -119,20 +119,20 @@ function writeEvent(iii,etime,evauth,kind,text)
 // alert($('.gh-header-meta relative-time').attr('datetime'));
 
 $('.sticky-content').html("");
-issueno = $('.gh-header-number').text();
+issueno = $('.gh-header-title').text();
 issueno = issueno.substring(issueno.indexOf('#') + 1);
 issueno++;
 while(excludeIssuesArr.indexOf(issueno)!=-1){
   issueno++;
 }
-
-
+  
 if(issueno>1) issue+=",";
 issue += '{';
-issue += '"issueno":"' + $('.gh-header-number').text() + '",';
+issue += '"issueno":"' + (issueno-1) + '",';
 issue += '"issuetitle":"' + writeContent($('.js-issue-title').text()) + '",';
 var issueAuthor=writeContent($('.gh-header-meta .author').text());
 issue += '"issueauthor":"' + issueAuthor + '",';
+// alert(issueAuthor);
 
 var issuetime=$('.gh-header-meta relative-time').attr('datetime');
 if(typeof(issuetime) == "undefined"){
