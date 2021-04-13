@@ -23,7 +23,6 @@ if(suffix!="")dataFile+="_"+suffix;
 dataFile+=".js";
 const serviceUrl="https://wwwlab.iit.his.se/brom/Scrapers/write_scrape_data.php";
 
-
 var ignoreEvtArr=[
   "discussion-item-changes-marker",
   "form js-ajax-pagination",
@@ -46,7 +45,6 @@ function response(response) {
         issueno++;
     }
     
-    alert(issueno+" "+start+" "+stop);
     if(issueno<=start || issueno>stop){
         alert("Done scraping! The data is collected in "+dataFile)
     }else{
@@ -94,7 +92,6 @@ function writeContent(strr)
 function writeevent(etime,evauth,kind,text)
 {
   		var ev="";
-      alert("Write Event "+iii+" "+kind+" "+text);
 
   		// Add commas if we have an event and it is not the first one
       if (iii != 0) ev += ',';
@@ -127,12 +124,11 @@ function writeevent(etime,evauth,kind,text)
 
 $('.sticky-content').html("");
 issueno = $('.gh-header-title').text();
-alert("IN: "+issueno);
-issueno = issueno.substring(issueno.indexOf('#') + 1);
+issueno = issueno.substring(issueno.lastIndexOf('#') + 1).trim();
   
 if(issueno>1) issue+=",";
 issue += '{';
-issue += '"issueno":"' + (issueno-1) + '",';
+issue += '"issueno":"' + issueno + '",';
 issue += '"issuetitle":"' + writeContent($('.js-issue-title').text()) + '",';
 var issueAuthor=writeContent($('.gh-header-meta .author').text());
 issue += '"issueauthor":"' + issueAuthor + '",';
@@ -149,7 +145,6 @@ issue += '"state":"' + stat + '",';
 var message=($('.js-comment-body').first().text());
 var screenshot="["+$('.js-comment-body').first().find("img").attr("src")+"]";
 if(screenshot!="[undefined]") message+=screenshot;  
-alert(message);
 
 issue += '"message":"' + writeContent(message) + '",';
 issue += '"events":[';
@@ -397,7 +392,7 @@ $('.TimelineItem').each(function (i,tl) {
 issue += ']';
 issue += '}\n';
 
- alert(issue);
+//  alert(issue);
 
 ajaxCall(issue);
 })();
