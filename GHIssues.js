@@ -31,8 +31,7 @@ var ignoreEvtArr=[
   "eak",
 	"js-socket-channel js-updatable-content",
   "dge text-white bg-red",
-  "dy",
-  "file-diff"
+  "dy"
 ];
 
 var excludeIssuesArr=[5919];
@@ -45,7 +44,7 @@ function response(response) {
     while(excludeIssuesArr.indexOf(issueno)!=-1){
         issueno++;
     }
-    
+      
     if(issueno<=start || issueno>stop){
         alert("Done scraping! The data is collected in "+dataFile)
     }else{
@@ -56,6 +55,7 @@ function response(response) {
 }
 
 function ajaxCall(data) {
+	alert(data);
   try {
       req=GM.xmlHttpRequest({
       method: 'POST',
@@ -153,9 +153,19 @@ var backuptime="UNK";
 iii=0;
 
 $('.timeline-comment').each(function (i,tl) {
- 		alert("City Gross Byxor: "+$(tl).find('.js-comment-body').text()+" "+$(tl).find(".author").first().text());
+  	if(i>0){
+      	var author=$(tl).find(".author").first().text();
+      	var txt=$(tl).find('.js-comment-body').text();
+      	var tme = $(tl).find('relative-time').attr('datetime');
+      	if(txt.trim()!=""){
+          	if(typeof tme == "undefined"){
+            		var tme=$(tl).parents('.TimelineItem').prev().find('relative-time').attr('datetime');
+            }
+          	alert(txt+"\n"+author+"\n"+tme);
+        }
+    }
 });
-  	
+  
 $('.TimelineItem').each(function (i,tl) {
   	var tme = $(tl).find('relative-time').attr('datetime');
   	if(!tme){
@@ -332,6 +342,9 @@ $('.TimelineItem').each(function (i,tl) {
       // Ignore smiley events - currently used as hidden dialog boxes
       let txt=$(tl).find(".TimelineItem-body").first().text();
       //issue+=writeEvent(i,tme,usr,"smiley",writeContent(txt));		// Found in issue #704
+    }else if(evt=="file-diff"){
+      // Ignore file diff - currently used as hidden dialog boxes
+      //issue+=writeEvent(i,tme,usr,"smiley",writeContent(txt));		// Found in issue #2485
     }else if(evt=="unfold position-relative mr-1"){
       let txt=$(tl).find(".TimelineItem-body").first().text();
       issue+=writeevent(tme,usr,"unfold",writeContent(txt));		// Found in issue #712
