@@ -151,6 +151,11 @@ issue += '"message":"' + writeContent(message) + '",';
 issue += '"events":[';
 var backuptime="UNK";
 iii=0;
+
+$('.timeline-comment').each(function (i,tl) {
+ 		alert("City Gross Byxor: "+$(tl).find('.js-comment-body').text()+" "+$(tl).find(".author").first().text());
+});
+  	
 $('.TimelineItem').each(function (i,tl) {
   	var tme = $(tl).find('relative-time').attr('datetime');
   	if(!tme){
