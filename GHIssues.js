@@ -31,7 +31,8 @@ var ignoreEvtArr=[
   "eak",
 	"js-socket-channel js-updatable-content",
   "dge text-white bg-red",
-  "dy"
+  "dy",
+  "file-diff"
 ];
 
 var excludeIssuesArr=[5919];
