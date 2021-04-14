@@ -155,13 +155,14 @@ iii=0;
 $('.timeline-comment').each(function (i,tl) {
   	if(i>0){
       	var author=$(tl).find(".author").first().text();
-      	var txt=$(tl).find('.js-comment-body').text();
+      	var txt=$(tl).find('.js-comment-body').text().trim();
       	var tme = $(tl).find('relative-time').attr('datetime');
       	if(txt.trim()!=""){
           	if(typeof tme == "undefined"){
             		var tme=$(tl).parents('.TimelineItem').prev().find('relative-time').attr('datetime');
             }
-          	alert(txt+"\n"+author+"\n"+tme);
+          	//alert(txt+"\n"+author+"\n"+tme);
+	          issue+=writeevent(tme,author,"comment",txt);
         }
     }
 });
