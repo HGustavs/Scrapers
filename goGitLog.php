@@ -25,10 +25,11 @@ if ($handle) {
 
         if(strpos($line,"commit")===0){
             $parents=explode(" ",$line);
-            $commitid=$parents[1];
+            $commitid=trim($parents[1]);
             array_shift($parents);
             array_shift($parents);
         }
+
         if(strpos($line,"Author")===0){
             $author=substr($line,8);
             $authorname=substr($author,0,strpos($author,"<")-1);
@@ -64,52 +65,60 @@ if ($handle) {
     // error opening the file.
 } 
 
-// Space is advanced for each new branch from a specific parent space=parent[space]+parent[children];
-// If only one parent yk=parent[yk] xk=current++;
-
 echo count($commits);
-
 echo "</pre>";
 
 $free=Array();
 
 $i=0;
 echo "<table style='font-family:courier;font-size:12px;' border=1>";
-foreach($commits as $commit){
+foreach($commits as &$commit){
+    // Variables
+    $commitid=$commit['commitid'];
+    $parents=$commit['parents'];
+    $parentcnt=count($commit['parents']);
 
-    if($i++==20) break;
+    // Update parents with reference to child
+    foreach($parents as $parentid){
+        $parent=&$commits[trim($parentid)];
+        array_push($parent['children'],$commitid);
+        unset($parent);
+    }
 
     if($i==0){
         $commit['space']=0;
         $commit['time']=0;
+    }else{
+        if($parentcnt==1){
+            $parent=$commits[trim($parentid)];
+            $commit['space']=$parent['space']+1;
+        }else{
+          $parentA=$commits[trim($parentid)];
+          $parentB=$commits[trim($parentid)];
+
+          $commit['space']=max($parentA['space'],$parentB['space'])+1;
+        }
     }
     
-    $commitid=$commit['commitid'];
-    $parents=$commit['parents'];
+    if($i++==125) break;
 
-    if(count($parents)==1){
-        // Normal
-        $parent=$commits[$parents[0]];
-        array_push($parent['children'],$commitid);
-    }else if(count($parents)==2){
-
-    }
+    unset($commit);
 }
 echo "</table>";
 
 $i=0;
 echo "<table style='font-family:courier;font-size:12px;' border=1>";
-foreach($commits as $commit){
+foreach($commits as $commitid => $commit){
 
-    if($i++==20) break;
+    if($i++==125) break;
 
     echo "<tr>";
-    echo "<td>".$commit['commitid']."</td>";
-    echo "<td>".$commit['space']."</td>";
-    echo "<td>".$commit['time']."</td>";
+    echo "<td>".$commitid."</td>";
+
+    echo "<td>".$commit['space']."</td>";    
     
     echo "<td>";
-    foreach($commit['parent'] as $parent){
+    foreach($commit['parents'] as $parent){
         echo "<div>".$parent."</div>";
     }
     echo "</td>";
