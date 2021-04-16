@@ -55,6 +55,7 @@ if ($handle) {
         $commit['parents']=$parents;
         $commit['author']=$login;
         $commit['commitid']=$commitid;
+        $commit['children']=Array();
 
         $commits[$commitid]=$commit;
     }
@@ -70,6 +71,8 @@ echo count($commits);
 
 echo "</pre>";
 
+$free=Array();
+
 $i=0;
 echo "<table style='font-family:courier;font-size:12px;' border=1>";
 foreach($commits as $commit){
@@ -79,22 +82,41 @@ foreach($commits as $commit){
     if($i==0){
         $commit['space']=0;
         $commit['time']=0;
-    }else{
-        $commit['space']=1;
-        $commit['time']=$i;
     }
-
+    
     $commitid=$commit['commitid'];
     $parents=$commit['parents'];
+
+    if(count($parents)==1){
+        // Normal
+        $parent=$commits[$parents[0]];
+        array_push($parent['children'],$commitid);
+    }else if(count($parents)==2){
+
+    }
+}
+echo "</table>";
+
+$i=0;
+echo "<table style='font-family:courier;font-size:12px;' border=1>";
+foreach($commits as $commit){
+
+    if($i++==20) break;
 
     echo "<tr>";
     echo "<td>".$commit['commitid']."</td>";
     echo "<td>".$commit['space']."</td>";
     echo "<td>".$commit['time']."</td>";
+    
     echo "<td>";
-    if($count)
-    foreach($parents as $parent){
+    foreach($commit['parent'] as $parent){
         echo "<div>".$parent."</div>";
+    }
+    echo "</td>";
+
+    echo "<td>";
+    foreach($commit['children'] as $child){
+        echo "<div>".$child."</div>";
     }
     echo "</td>";
 
@@ -102,7 +124,9 @@ foreach($commits as $commit){
 }
 echo "</table>";
 
+
 ?>
+
 
 </body>
 </html>
