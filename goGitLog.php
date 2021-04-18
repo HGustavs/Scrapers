@@ -122,8 +122,35 @@ foreach($commits as &$commit){
             // If a merge
             $parentA=$commits[trim($parentid)];
             $parentB=$commits[trim($parentid)];
-            $commit['space']=max($parentA['space'],$parentB['space'])+1;
+            $parentAChildCount=count($parentA['children']);
+            $parentBChildCount=count($parentB['children']);
+
+            // Default -1
             $commit['time']=-1;
+
+            // Kinds of merges
+            if(($parentAChildCount==1)&&($parentBChildCount==1)){
+                // Both branches have no additional children - we continue from lowest
+                if($parentA['time']>=$parentB['time']){
+                    // Close ParentA use ParentB
+                    $commit['time']=$parentB['time'];    
+                }else{
+                    // Close ParentB use ParentA
+                    $commit['time']=$parentA['time'];    
+                }
+            }else if(($parentAChildCount>1)&&($parentBChildCount==1)){
+                // Parent A has multiple Children - but parent B does not - No closing
+                $commit['time']=$parentB['time'];                 
+            }else if(($parentAChildCount==1)&&($parentBChildCount>1)){
+                // Parent B has multiple Children - but parent A does not - No closing
+                $commit['time']=$parentA['time'];                 
+            }else{
+                // Neither can directly be a parent - generate new space
+                $commit['time']=findLatestSpace($commitid);
+              }
+            
+            // We pick the front commit as the x coordinate of new commit
+            $commit['space']=max($parentA['space'],$parentB['space'])+1;
         }
     }
     
