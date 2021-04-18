@@ -17,8 +17,6 @@ function findLatestSpace($itemid)
 {
     global $spaces;
 
-    echo $itemid;
-
     for($i=0;$i<count($spaces);$i++){
         if($spaces[$i]==""){
             $spaces[$i]=$itemid;
@@ -120,8 +118,8 @@ foreach($commits as &$commit){
             }
           }else{
             // If a merge
-            $parentA=$commits[trim($parentid)];
-            $parentB=$commits[trim($parentid)];
+            $parentA=$commits[trim($commit['parents'][0])];
+            $parentB=$commits[trim($commit['parents'][1])];
             $parentAChildCount=count($parentA['children']);
             $parentBChildCount=count($parentB['children']);
 
@@ -138,34 +136,45 @@ foreach($commits as &$commit){
                     // Close ParentB use ParentA
                     $commit['time']=$parentA['time'];    
                 }
+                $type="A";
             }else if(($parentAChildCount>1)&&($parentBChildCount==1)){
                 // Parent A has multiple Children - but parent B does not - No closing
                 $commit['time']=$parentB['time'];                 
-            }else if(($parentAChildCount==1)&&($parentBChildCount>1)){
+                $type="B";
+             }else if(($parentAChildCount==1)&&($parentBChildCount>1)){
                 // Parent B has multiple Children - but parent A does not - No closing
                 $commit['time']=$parentA['time'];                 
-            }else{
+                $type="C";
+             }else{
                 // Neither can directly be a parent - generate new space
                 $commit['time']=findLatestSpace($commitid);
-              }
+                $type="A";
+             }
+
+            echo "<div>";
+            echo substr($commitid,0,4)." ".$type." A ".$parentA['space']." B ".$parentB['space'];
+            echo "</div>";            
             
             // We pick the front commit as the x coordinate of new commit
             $commit['space']=max($parentA['space'],$parentB['space'])+1;
         }
     }
     
-    if($i++==55) break;
+    if($i++==75) break;
 
     unset($commit);
 }
 echo "</table>";
 
 $i=0;
+
+$str="<svg width='2000' height='1000' viewBox='-100 -100 2000 1000' >";
+
 echo "<table style='font-family:courier;font-size:12px;' border=1>";
 echo "<tr><th>ID</th><th>space</th><th>time</th><th>parents</th><th>children</th></tr>";
 foreach($commits as $commitid => $commit){
 
-    if($i++==55) break;
+    if($i++==75) break;
 
     echo "<tr>";
     echo "<td>".substr($commitid,0,4)."</td>";
@@ -173,9 +182,18 @@ foreach($commits as $commitid => $commit){
     echo "<td>".$commit['space']."</td>";    
     echo "<td>".$commit['time']."</td>";
 
+    $cx=$commit['space']*25;
+    $cy=$commit['time']*28;
+
+    $str.="<text x='".$cx."' y='".($cy-10)."' alignment-baseline='middle' text-anchor='middle' font-family='Arial Narrow' font-size='12' >".substr($commitid,0,4)."</text>";
+    $str.="<circle cx='".$cx."' cy='".$cy."' r='5'/>";
+
     echo "<td>";
     foreach($commit['parents'] as $parent){
         echo "<div>".substr($parent,0,4)."</div>";
+        $px=$commits[trim($parent)]['space']*25;
+        $py=$commits[trim($parent)]['time']*28;
+        $str.="<line x1='".$cx."'  y1='".$cy."' x2='".$px."' y2='".$py."' style='stroke:rgb(255,0,0);stroke-width:2' />";
     }
     echo "</td>";
 
@@ -189,6 +207,7 @@ foreach($commits as $commitid => $commit){
 }
 echo "</table>";
 
+echo $str;
 
 ?>
 
