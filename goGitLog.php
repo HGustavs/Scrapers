@@ -10,6 +10,26 @@
 require 'substitution.php';
 
 $commits=Array();
+$spaces=Array("FIRST");
+
+// We look for latest empty space in spaces array
+function findLatestSpace($itemid)
+{
+    global $spaces;
+
+    echo $itemid;
+
+    for($i=0;$i<count($spaces);$i++){
+        if($spaces[$i]==""){
+            $spaces[$i]=$itemid;
+            return $i;
+        }
+    }
+
+    $spaces[$i]=$itemid;
+    return $i;
+
+}
 
 echo "<pre>";
 
@@ -90,17 +110,24 @@ foreach($commits as &$commit){
         $commit['time']=0;
     }else{
         if($parentcnt==1){
+            // If a branch
             $parent=$commits[trim($parentid)];
             $commit['space']=$parent['space']+1;
-        }else{
-          $parentA=$commits[trim($parentid)];
-          $parentB=$commits[trim($parentid)];
-
-          $commit['space']=max($parentA['space'],$parentB['space'])+1;
+            if(count($parent['children'])==1){
+                $commit['time']=$parent['time'];
+            }else{
+              $commit['time']=findLatestSpace($commitid);
+            }
+          }else{
+            // If a merge
+            $parentA=$commits[trim($parentid)];
+            $parentB=$commits[trim($parentid)];
+            $commit['space']=max($parentA['space'],$parentB['space'])+1;
+            $commit['time']=-1;
         }
     }
     
-    if($i++==125) break;
+    if($i++==55) break;
 
     unset($commit);
 }
@@ -108,24 +135,26 @@ echo "</table>";
 
 $i=0;
 echo "<table style='font-family:courier;font-size:12px;' border=1>";
+echo "<tr><th>ID</th><th>space</th><th>time</th><th>parents</th><th>children</th></tr>";
 foreach($commits as $commitid => $commit){
 
-    if($i++==125) break;
+    if($i++==55) break;
 
     echo "<tr>";
-    echo "<td>".$commitid."</td>";
+    echo "<td>".substr($commitid,0,4)."</td>";
 
     echo "<td>".$commit['space']."</td>";    
-    
+    echo "<td>".$commit['time']."</td>";
+
     echo "<td>";
     foreach($commit['parents'] as $parent){
-        echo "<div>".$parent."</div>";
+        echo "<div>".substr($parent,0,4)."</div>";
     }
     echo "</td>";
 
     echo "<td>";
     foreach($commit['children'] as $child){
-        echo "<div>".$child."</div>";
+        echo "<div>".substr($child,0,4)."</div>";
     }
     echo "</td>";
 
