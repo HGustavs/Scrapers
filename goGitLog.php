@@ -29,6 +29,30 @@ function findLatestSpace($itemid)
 
 }
 
+function svgline($x1,$y1,$x2,$y2,$xmul,$ymul)
+{
+    $str="";
+    if((abs($x2-$x1)>1)&&($y1!=$y2)){
+        $str.="<line x1='".($x1*$xmul)."'  y1='".($y1*$ymul)."' x2='".(($x2-1)*$xmul)."' y2='".($y1*$ymul)."' style='stroke:rgb(255,0,0);stroke-width:2' />";
+        $str.="<line x1='".(($x2-1)*$xmul)."'  y1='".($y1*$ymul)."' x2='".($x2*$xmul)."' y2='".($y2*$ymul)."' style='stroke:rgb(255,0,0);stroke-width:2' />";
+    }else{
+        $str.="<line x1='".($x1*$xmul)."'  y1='".($y1*$ymul)."' x2='".($x2*$xmul)."' y2='".($y2*$ymul)."' style='stroke:rgb(255,0,0);stroke-width:2' />";
+    }
+
+    return($str);
+}
+
+function svgcirc($cx,$cy,$xmul,$ymul,$texty,$intext)
+{
+  $str="";
+  $str.="<text x='".($cx*$xmul)."' y='".(($cy*$ymul)-$texty)."' alignment-baseline='middle' text-anchor='middle' font-family='Arial Narrow' font-size='12' >";
+  $str.=$intext;
+  $str.="</text>";
+  $str.="<circle cx='".($cx*$xmul)."' cy='".($cy*$ymul)."' r='5'/>";      
+  return $str;
+}
+
+
 echo "<pre>";
 
 $handle = fopen("../gitlog.txt", "r");
@@ -182,18 +206,17 @@ foreach($commits as $commitid => $commit){
     echo "<td>".$commit['space']."</td>";    
     echo "<td>".$commit['time']."</td>";
 
-    $cx=$commit['space']*25;
-    $cy=$commit['time']*28;
+    $cx=$commit['space'];
+    $cy=$commit['time'];
 
-    $str.="<text x='".$cx."' y='".($cy-10)."' alignment-baseline='middle' text-anchor='middle' font-family='Arial Narrow' font-size='12' >".substr($commitid,0,4)."</text>";
-    $str.="<circle cx='".$cx."' cy='".$cy."' r='5'/>";
+    $str.=svgcirc($cx,$cy,25,28,-10,substr($commitid,0,4));
 
     echo "<td>";
     foreach($commit['parents'] as $parent){
         echo "<div>".substr($parent,0,4)."</div>";
-        $px=$commits[trim($parent)]['space']*25;
-        $py=$commits[trim($parent)]['time']*28;
-        $str.="<line x1='".$cx."'  y1='".$cy."' x2='".$px."' y2='".$py."' style='stroke:rgb(255,0,0);stroke-width:2' />";
+        $px=$commits[trim($parent)]['space'];
+        $py=$commits[trim($parent)]['time'];
+        $str.=svgline($px,$py,$cx,$cy,25,28);
     }
     echo "</td>";
 
