@@ -18,25 +18,32 @@ function findLatestSpace($itemid)
     global $spaces;
 
     for($i=0;$i<count($spaces);$i++){
-        if($spaces[$i]==""){
+        if($spaces[$i]=="UNK"){
             $spaces[$i]=$itemid;
             return $i;
         }
     }
 
     $spaces[$i]=$itemid;
-    return $i;
 
+    return $i;
+}
+
+// 
+function clearLatestSpace($ind)
+{
+    global $spaces;
+    if(isset($spaces[$ind])) $spaces[$ind]="UNK";
 }
 
 function svgline($x1,$y1,$x2,$y2,$xmul,$ymul)
 {
     $str="";
     if((abs($x2-$x1)>1)&&($y1!=$y2)){
-        $str.="<line x1='".($x1*$xmul)."'  y1='".($y1*$ymul)."' x2='".(($x2-1)*$xmul)."' y2='".($y1*$ymul)."' style='stroke:rgb(255,0,0);stroke-width:2' />";
-        $str.="<line x1='".(($x2-1)*$xmul)."'  y1='".($y1*$ymul)."' x2='".($x2*$xmul)."' y2='".($y2*$ymul)."' style='stroke:rgb(255,0,0);stroke-width:2' />";
+        $str.="<line x1='".($x1*$xmul)."'  y1='".($y1*$ymul)."' x2='".(($x2-1)*$xmul)."' y2='".($y1*$ymul)."' style='stroke:#269;stroke-width:2' />";
+        $str.="<line x1='".(($x2-1)*$xmul)."'  y1='".($y1*$ymul)."' x2='".($x2*$xmul)."' y2='".($y2*$ymul)."' style='stroke:#269;stroke-width:2' />";
     }else{
-        $str.="<line x1='".($x1*$xmul)."'  y1='".($y1*$ymul)."' x2='".($x2*$xmul)."' y2='".($y2*$ymul)."' style='stroke:rgb(255,0,0);stroke-width:2' />";
+        $str.="<line x1='".($x1*$xmul)."'  y1='".($y1*$ymul)."' x2='".($x2*$xmul)."' y2='".($y2*$ymul)."' style='stroke:#269;stroke-width:2' />";
     }
 
     return($str);
@@ -51,9 +58,6 @@ function svgcirc($cx,$cy,$xmul,$ymul,$texty,$intext)
   $str.="<circle cx='".($cx*$xmul)."' cy='".($cy*$ymul)."' r='5'/>";      
   return $str;
 }
-
-
-echo "<pre>";
 
 $handle = fopen("../gitlog.txt", "r");
 if ($handle) {
@@ -107,13 +111,9 @@ if ($handle) {
     // error opening the file.
 } 
 
-echo count($commits);
-echo "</pre>";
-
 $free=Array();
 
 $i=0;
-echo "<table style='font-family:courier;font-size:12px;' border=1>";
 foreach($commits as &$commit){
     // Variables
     $commitid=$commit['commitid'];
@@ -155,10 +155,12 @@ foreach($commits as &$commit){
                 // Both branches have no additional children - we continue from lowest
                 if($parentA['time']>=$parentB['time']){
                     // Close ParentA use ParentB
-                    $commit['time']=$parentB['time'];    
+                    $commit['time']=$parentB['time'];
+                    clearLatestSpace($parentA['time']);    
                 }else{
                     // Close ParentB use ParentA
                     $commit['time']=$parentA['time'];    
+                    clearLatestSpace($parentB['time']);    
                 }
                 $type="A";
             }else if(($parentAChildCount>1)&&($parentBChildCount==1)){
@@ -170,67 +172,79 @@ foreach($commits as &$commit){
                 $commit['time']=$parentA['time'];                 
                 $type="C";
              }else{
-                // Neither can directly be a parent - generate new space
+                // Neither can directly be a parent - generate new space - No closing
                 $commit['time']=findLatestSpace($commitid);
-                $type="A";
+                $type="D";
              }
 
-            echo "<div>";
-            echo substr($commitid,0,4)." ".$type." A ".$parentA['space']." B ".$parentB['space'];
-            echo "</div>";            
-            
             // We pick the front commit as the x coordinate of new commit
             $commit['space']=max($parentA['space'],$parentB['space'])+1;
         }
     }
     
-    if($i++==75) break;
+    if($i++==1175) break;
 
     unset($commit);
 }
-echo "</table>";
 
 $i=0;
 
 $str="<svg width='2000' height='1000' viewBox='-100 -100 2000 1000' >";
 
-echo "<table style='font-family:courier;font-size:12px;' border=1>";
-echo "<tr><th>ID</th><th>space</th><th>time</th><th>parents</th><th>children</th></tr>";
+$json="[";
+
+$tab="<table style='font-family:courier;font-size:12px;' border=1>";
+$tab.="<tr><th>ID</th><th>space</th><th>time</th><th>parents</th><th>children</th></tr>";
 foreach($commits as $commitid => $commit){
+    if($i++==1175) break;
+    if($i!=1) $json.=",\n";
+    $json.="{\n";
+    $json.="author:".$commit['author']."\n";
 
-    if($i++==75) break;
+    $tab.= "<tr>";
+    $tab.= "<td>".substr($commitid,0,4)."</td>";
 
-    echo "<tr>";
-    echo "<td>".substr($commitid,0,4)."</td>";
 
-    echo "<td>".$commit['space']."</td>";    
-    echo "<td>".$commit['time']."</td>";
+    $tab.= "<td>".$commit['space']."</td>";    
+    $tab.= "<td>".$commit['time']."</td>";
 
     $cx=$commit['space'];
     $cy=$commit['time'];
 
     $str.=svgcirc($cx,$cy,25,28,-10,substr($commitid,0,4));
 
-    echo "<td>";
+    $tab.= "<td>";
     foreach($commit['parents'] as $parent){
-        echo "<div>".substr($parent,0,4)."</div>";
+        $tab.= "<div>".substr($parent,0,4)."</div>";
         $px=$commits[trim($parent)]['space'];
         $py=$commits[trim($parent)]['time'];
         $str.=svgline($px,$py,$cx,$cy,25,28);
     }
-    echo "</td>";
+    $tab.= "</td>";
 
-    echo "<td>";
+    $tab.= "<td>";
     foreach($commit['children'] as $child){
-        echo "<div>".substr($child,0,4)."</div>";
+        $tab.= "<div>".substr($child,0,4)."</div>";
     }
-    echo "</td>";
+    $tab.= "</td>";
 
-    echo "</tr>";
+    $tab.= "</tr>";
+    $json.="}";
 }
-echo "</table>";
+$tab.= "</table>";
 
-echo $str;
+$json.="]\n";
+
+echo $tab;
+
+echo "<pre>".$json."</pre>";
+
+/*
+[
+{"id":"ac5bc99703e75f7062a6c5da9d306ec7a4122db2","parents":[["a7c469a8e5a4a3e45e2c0a160833883241df343f",5742,46]],"message":"Set noselect class to body instead of guideline container","author":"Anton Svensson","login":"a18antsv","date":"2020-05-26 12:45:56","gravatar":"https://avatars2.githubusercontent.com/u/49121839?s=64&v=4","space":46,"time":5743},
+*/
+
+
 
 ?>
 
