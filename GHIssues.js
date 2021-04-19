@@ -14,10 +14,10 @@ var timeout=null;
 var timeoutDelay=4000;
 var iii=7;
 var start=1;
-var stop=1000;
+var stop=11000;
 var year=2021;
-var week=1;
-var suffix="20200621";
+var week=3;
+var suffix="20210419mb";
 var dataFile="data_issues_"+year+"_v"+week+"_"+start+"-"+stop
 if(suffix!="")dataFile+="_"+suffix;
 dataFile+=".js";
@@ -49,13 +49,13 @@ function response(response) {
         alert("Done scraping! The data is collected in "+dataFile)
     }else{
         // req.abort();
-        //timeout=setTimeout(function(){clearTimeout(timeout); window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno; }, timeoutDelay+Math.floor(Math.random()*1000));
+        timeout=setTimeout(function(){clearTimeout(timeout); window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno; }, timeoutDelay+Math.floor(Math.random()*1000));
         //window.location.href = "https://github.com/HGustavs/LenaSYS/issues/"+issueno;
     }
 }
 
-function ajaxCall(data) {
-	alert(data);
+function ajaxCall(data) {	
+  //alert(data)
   try {
       req=GM.xmlHttpRequest({
       method: 'POST',
@@ -400,6 +400,9 @@ $('.TimelineItem').each(function (i,tl) {
     }else if(evt=="pin-pinned"){
       let txt=$(tl).find(".TimelineItem-body").first().text();
       issue+=writeevent(tme,usr,"pinpinned",writeContent(txt)); // Found in pull #7847
+    }else if(evt=="pin-unpinned"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeevent(tme,usr,"pinunpinned",writeContent(txt)); // Found in pull #7847
     }else if(evt=="project-created"){
       let txt=$(tl).find(".TimelineItem-body").first().text();
       issue+=writeevent(tme,usr,"projectcreated",writeContent(txt)); // Found in pull #9145
