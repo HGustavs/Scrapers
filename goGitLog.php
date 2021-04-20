@@ -67,11 +67,11 @@ $commitid=NULL;
 if ($handle) {
     $i=0;
     $commitrow=0;
+    $message="UNK";
     while (($line = fgets($handle)) !== false) {
         $i++;
         $login="";
         $commitrow++;
-        $message="UNK";
 
         if(strpos($line,"commit")===0){
             
@@ -89,7 +89,12 @@ if ($handle) {
 
             $commit['commitid']=$commitid;
             $commit['parents']=$parents;  
-            $commit['children']=Array();                      
+            $commit['children']=Array();
+            $commit['message']=$message; 
+            $commit['space']=-100;
+            $commit['time']=-100;
+            
+            $message="UNK";
         }else if(strpos($line,"Author")===0){
             $author=substr($line,8);
             $authorname=substr($author,0,strpos($author,"<")-1);
@@ -118,8 +123,7 @@ if ($handle) {
         }else{
             if($commitrow==4){
                 $message=str_replace(array("\n", "\r"),"",trim($line));
-                $message=str_replace(array("<", ">","'",'"',"&"),"_",$message);                
-                $commit['message']=$message;
+                $message=str_replace(array("<", ">"),"",$message);                
               }else{
                 $content.=str_replace(array("\n", "\r"),"",trim($line));
             }
@@ -134,6 +138,7 @@ if ($handle) {
 $free=Array();
 
 $i=0;
+$latestspace=0;
 foreach($commits as &$commit){
     // Variables
     $commitid=$commit['commitid'];
@@ -153,12 +158,20 @@ foreach($commits as &$commit){
     }else{
         if($parentcnt==1){
             // If a branch
-            $parent=$commits[trim($parentid)];
-            $commit['space']=$parent['space']+1;
-            if(count($parent['children'])==1){
-                $commit['time']=$parent['time'];
+            $parent=$commits[trim($parents[0])];
+            if($parent['space']==-100){
+                // If parent comes after child (rare)
+                $commit['time']=findLatestSpace($commitid);
+                $commit['space']=$latestspace;
             }else{
-              $commit['time']=findLatestSpace($commitid);
+                $commit['space']=$parent['space']+1;
+                // Save latest branch space
+                $latestspace=$commit['space'];
+                if(count($parent['children'])==1){
+                    $commit['time']=$parent['time'];
+                }else{
+                  $commit['time']=findLatestSpace($commitid);
+                }
             }
           }else{
             // If a merge
@@ -169,6 +182,19 @@ foreach($commits as &$commit){
 
             // Default -1
             $commit['time']=-1;
+
+            if($parentA['space']==-100){
+                $parentA['space']=$latestspace;
+            }
+            if($parentB['space']==-100){
+                $parentB['space']=$latestspace;
+            }
+            if($parentA['time']==-100){
+                $parentA['time']=findLatestSpace($commitid);
+            }
+            if($parentB['time']==-100){
+                $parentB['time']=findLatestSpace($commitid);
+            }
 
             // Kinds of merges
             if(($parentAChildCount==1)&&($parentBChildCount==1)){
@@ -201,8 +227,8 @@ foreach($commits as &$commit){
             $commit['space']=max($parentA['space'],$parentB['space'])+1;
         }
     }
-    
-    if($i++==1175) break;
+   
+    $i++;
 
     unset($commit);
 }
@@ -216,22 +242,26 @@ $json="[";
 $tab="<table style='font-family:courier;font-size:12px;' border=1>";
 $tab.="<tr><th>ID</th><th>space</th><th>time</th><th>parents</th><th>children</th></tr>";
 foreach($commits as $commitid => $commit){
-    if($i++==1175) break;
+    $i++;
     if($i!=1) $json.=",\n";
     $json.="{\n";
 
-    $json.='"id":"'.$commit['commitid'].'",'."\n";
-    $json.='"parents":[';
-    $i=0;
-    foreach($commit['parents'] as $parent){
-      if($i++>1) $json.=",";
-      $json.='"'.$parent.'"';
-    }
-    $json.='],';
+    if(!isset($commit['message'])) print_r($commit);
+
+    $json.='"id":"'.$commit['commitid'].'",'."\n";    
     $json.='"author":"'.$commit['author'].'",'."\n";
-    $json.='"message":"'.$commit['message'].'"'."\n";
-    $json.='"time":"'.$commit['space'].'",'."\n";
-    $json.='"space":"'.$commit['time'].'"'."\n";
+    $json.='"message":"'.$commit['message'].'",'."\n";    
+    $json.='"space":"'.$commit['space'].'",'."\n";
+    $json.='"time":"'.$commit['time'].'"'."\n";
+
+    $json.='"parents":[';
+    $j=0;
+    foreach($commit['parents'] as $parent){
+        if($j!=0) $json.=",";
+        $json.='"'.trim($parent).'"';
+        $j++;
+    }
+    $json.="]\n";
 
     $tab.= "<tr>";
     $tab.= "<td>".substr($commitid,0,4)."</td>";
