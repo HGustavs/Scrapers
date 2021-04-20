@@ -130,13 +130,11 @@ foreach($arr as $key => $commit){
 		$cont++;
 }
 
-/*
-
 // ---------------================############### Here comes Issues ############==================------------------------------
 
 echo "<tr><td style='font-family:20px;font-weight:bold;'>ISSUES!</td></tr>";
 	
-$foo=file_get_contents("../GHData/data_issues_2019_10.js");
+$foo=file_get_contents("../GHData/data_issues_".$dbname.".js");
 $foo=substr($foo, 1);
 $foo="[".$foo."]";
 
@@ -213,6 +211,8 @@ foreach($arr as $key => $issue){
 		}
 				
 }
+
+/*
 
 // ---------------================############### Here comes Blame ############==================------------------------------
 
