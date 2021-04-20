@@ -1,10 +1,3 @@
-<html>
-	<head>
-		<title>PHP Test</title>
-	</head>
-
-<body>
-
 <?php 
 
 // Git Log ... git log --reverse --all --date=iso --parents
@@ -54,10 +47,10 @@ function svgline($x1,$y1,$x2,$y2,$xmul,$ymul)
 function svgcirc($cx,$cy,$xmul,$ymul,$texty,$intext)
 {
   $str="";
-  $str.="<text x='".($cx*$xmul)."' y='".(($cy*$ymul)-$texty)."' alignment-baseline='middle' text-anchor='middle' font-family='Arial Narrow' font-size='12' >";
-  $str.=$intext;
-  $str.="</text>";
-  $str.="<circle cx='".($cx*$xmul)."' cy='".($cy*$ymul)."' r='5'/>";      
+  //$str.="<text x='".($cx*$xmul)."' y='".(($cy*$ymul)-$texty)."' alignment-baseline='middle' text-anchor='middle' font-family='Arial Narrow' font-size='12' >";
+  //$str.=$intext;
+  //$str.="</text>";
+  $str.="<circle cx='".($cx*$xmul)."' cy='".($cy*$ymul)."' r='0.1'/>";      
   return $str;
 }
 
@@ -118,12 +111,13 @@ if ($handle) {
             // if(strlen($login)!=8) echo $author." ".$authorname." ".$commitid."\n";
         }else if(strpos($line,"Date")===0){
             $cdate=substr($line,7);
+            $commit['cdate']=trim($cdate);
         }else if(strpos($line,"Merge")===0){
             $commitrow--;
         }else{
             if($commitrow==4){
                 $message=str_replace(array("\n", "\r"),"",trim($line));
-                $message=str_replace(array("<", ">"),"",$message);                
+                $message=str_replace(array("<", ">",'"',"'","\\","/"),"",$message);                
               }else{
                 $content.=str_replace(array("\n", "\r"),"",trim($line));
             }
@@ -140,7 +134,6 @@ $free=Array();
 $i=0;
 $latestspace=0;
 foreach($commits as &$commit){
-    // Variables
     $commitid=$commit['commitid'];
     $parents=$commit['parents'];
     $parentcnt=count($commit['parents']);
@@ -251,14 +244,24 @@ foreach($commits as $commitid => $commit){
     $json.='"id":"'.$commit['commitid'].'",'."\n";    
     $json.='"author":"'.$commit['author'].'",'."\n";
     $json.='"message":"'.$commit['message'].'",'."\n";    
-    $json.='"space":"'.$commit['space'].'",'."\n";
-    $json.='"time":"'.$commit['time'].'"'."\n";
+    $json.='"space":"'.$commit['time'].'",'."\n";
+    $json.='"time":"'.$commit['space'].'",'."\n";
+    $json.='"date":"'.$commit['cdate'].'",'."\n";
 
     $json.='"parents":[';
     $j=0;
     foreach($commit['parents'] as $parent){
         if($j!=0) $json.=",";
         $json.='"'.trim($parent).'"';
+        $j++;
+    }
+    $json.="],\n";
+
+    $json.='"children":[';
+    $j=0;
+    foreach($commit['children'] as $child){
+        if($j!=0) $json.=",";
+        $json.='"'.trim($child).'"';
         $j++;
     }
     $json.="]\n";
@@ -273,14 +276,14 @@ foreach($commits as $commitid => $commit){
     $cx=$commit['space'];
     $cy=$commit['time'];
 
-    $str.=svgcirc($cx,$cy,25,28,-10,substr($commitid,0,4));
+    $str.=svgcirc($cx,$cy,0.5,0.5,-10,substr($commitid,0,4));
 
     $tab.= "<td>";
     foreach($commit['parents'] as $parent){
         $tab.= "<div>".substr($parent,0,4)."</div>";
         $px=$commits[trim($parent)]['space'];
         $py=$commits[trim($parent)]['time'];
-        $str.=svgline($px,$py,$cx,$cy,25,28);
+        $str.=svgline($px,$py,$cx,$cy,0.5,0.5);
     }
     $tab.= "</td>";
 
@@ -298,18 +301,10 @@ $tab.= "</table>";
 $json.="]\n";
 
 // echo $tab;
+//echo $str;
 
-echo "<pre>".$json."</pre>";
-
-/*
-[
-{"id":"ac5bc99703e75f7062a6c5da9d306ec7a4122db2","parents":[["a7c469a8e5a4a3e45e2c0a160833883241df343f",5742,46]],"message":"Set noselect class to body instead of guideline container","author":"Anton Svensson","login":"a18antsv","date":"2020-05-26 12:45:56","gravatar":"https://avatars2.githubusercontent.com/u/49121839?s=64&v=4","space":46,"time":5743},
-*/
-
-
+header('Content-Type: application/json'); 
+//header('Content-Type: application/txt'); 
+echo $json;
 
 ?>
-
-
-</body>
-</html>
