@@ -7,6 +7,8 @@
 
 <?php 
 
+// Git Log ... git log --reverse --all --date=iso --parents
+
 require 'substitution.php';
 
 $commits=Array();
@@ -60,23 +62,35 @@ function svgcirc($cx,$cy,$xmul,$ymul,$texty,$intext)
 }
 
 $handle = fopen("../gitlog.txt", "r");
+$commit=NULL;
+$commitid=NULL;
 if ($handle) {
     $i=0;
+    $commitrow=0;
     while (($line = fgets($handle)) !== false) {
         $i++;
-        // if($i>400) break;
-
-        //$parents=Array();
         $login="";
+        $commitrow++;
+        $message="UNK";
 
         if(strpos($line,"commit")===0){
+            
+            if($commit!==NULL){
+                $commits[$commitid]=$commit;
+            }
+            $commit=Array();
+
             $parents=explode(" ",$line);
             $commitid=trim($parents[1]);
             array_shift($parents);
             array_shift($parents);
-        }
+            $commitrow=0;
+            $content="";
 
-        if(strpos($line,"Author")===0){
+            $commit['commitid']=$commitid;
+            $commit['parents']=$parents;  
+            $commit['children']=Array();                      
+        }else if(strpos($line,"Author")===0){
             $author=substr($line,8);
             $authorname=substr($author,0,strpos($author,"<")-1);
             $author=substr($author,strpos($author,"<")+1,strpos($author,">")-strpos($author,"<")-1);
@@ -94,22 +108,28 @@ if ($handle) {
             }
             if(isset($substitution[$authorname])){
                 $login=$substitution[$authorname];
-            }            
+            }
+            $commit['author']=$login;            
             // if(strlen($login)!=8) echo $author." ".$authorname." ".$commitid."\n";
+        }else if(strpos($line,"Date")===0){
+            $cdate=substr($line,7);
+        }else if(strpos($line,"Merge")===0){
+            $commitrow--;
+        }else{
+            if($commitrow==4){
+                $message=str_replace(array("\n", "\r"),"",trim($line));
+                $message=str_replace(array("<", ">","'",'"',"&"),"_",$message);                
+                $commit['message']=$message;
+              }else{
+                $content.=str_replace(array("\n", "\r"),"",trim($line));
+            }
         }
 
-        $commit=Array();
-        $commit['parents']=$parents;
-        $commit['author']=$login;
-        $commit['commitid']=$commitid;
-        $commit['children']=Array();
-
-        $commits[$commitid]=$commit;
     }
     fclose($handle);
 } else {
     // error opening the file.
-} 
+}
 
 $free=Array();
 
@@ -199,7 +219,19 @@ foreach($commits as $commitid => $commit){
     if($i++==1175) break;
     if($i!=1) $json.=",\n";
     $json.="{\n";
-    $json.="author:".$commit['author']."\n";
+
+    $json.='"id":"'.$commit['commitid'].'",'."\n";
+    $json.='"parents":[';
+    $i=0;
+    foreach($commit['parents'] as $parent){
+      if($i++>1) $json.=",";
+      $json.='"'.$parent.'"';
+    }
+    $json.='],';
+    $json.='"author":"'.$commit['author'].'",'."\n";
+    $json.='"message":"'.$commit['message'].'"'."\n";
+    $json.='"time":"'.$commit['space'].'",'."\n";
+    $json.='"space":"'.$commit['time'].'"'."\n";
 
     $tab.= "<tr>";
     $tab.= "<td>".substr($commitid,0,4)."</td>";
@@ -235,7 +267,7 @@ $tab.= "</table>";
 
 $json.="]\n";
 
-echo $tab;
+// echo $tab;
 
 echo "<pre>".$json."</pre>";
 
