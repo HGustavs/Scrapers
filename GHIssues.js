@@ -13,11 +13,11 @@ var req=null;
 var timeout=null;
 var timeoutDelay=4000;
 var iii=7;
-var start=1;
+var start=8000;
 var stop=11000;
 var year=2021;
 var week=3;
-var suffix="20210419mb";
+var suffix="20210420mb";
 var dataFile="data_issues_"+year+"_v"+week+"_"+start+"-"+stop
 if(suffix!="")dataFile+="_"+suffix;
 dataFile+=".js";
@@ -80,8 +80,8 @@ function writeContent(strr)
     strr = strr.replace(/\\/g, '');
     strr = strr.replace(/{/g, '');
     strr = strr.replace(/}/g, '');
-    strr = strr.replace(/"/g, '');
-    strr = strr.replace(/'/g, '');
+    strr = strr.replace(/["'`´]/g, '');
+    //strr = strr.replace(/'/g, '');
     strr = strr.replace(/\s/g, ' ');
     strr = strr.replace(/\s+/g, ' ');
     strr = strr.replace(/\(/g,' ');
@@ -155,7 +155,7 @@ iii=0;
 $('.timeline-comment').each(function (i,tl) {
   	if(i>0){
       	var author=$(tl).find(".author").first().text();
-      	var txt=$(tl).find('.js-comment-body').text().trim();
+      	var txt=writeContent($(tl).find('.js-comment-body').text().trim());
       	var tme = $(tl).find('relative-time').attr('datetime');
       	if(txt.trim()!=""){
           	if(typeof tme == "undefined"){
@@ -403,6 +403,9 @@ $('.TimelineItem').each(function (i,tl) {
     }else if(evt=="pin-unpinned"){
       let txt=$(tl).find(".TimelineItem-body").first().text();
       issue+=writeevent(tme,usr,"pinunpinned",writeContent(txt)); // Found in pull #7847
+    }else if(evt=="x-deleted"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeevent(tme,usr,"xdeleted",writeContent(txt)); // Found in pull #6216
     }else if(evt=="project-created"){
       let txt=$(tl).find(".TimelineItem-body").first().text();
       issue+=writeevent(tme,usr,"projectcreated",writeContent(txt)); // Found in pull #9145
