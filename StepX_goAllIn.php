@@ -9,6 +9,8 @@
 
 <?php 
 
+$dbname="2021_03";
+
 /*
 
 This is just commits from the graph data file
@@ -19,12 +21,11 @@ set_time_limit (5000);
 
 //$gittags=array(2014=>"v0.4",2015=>"v0.7",2016=>"v0.85",2017=>"v0.95",2018=>"v0.105");
 //$gittags=array(2015=>"v0.7",2016=>"v0.85",2017=>"v0.95",2018=>"v0.105",2019=>"v0.115");
-	
+//$gittags=array(2019=>"v0.115");
+
 date_default_timezone_set('Europe/Berlin' );
 
-$gittags=array(2019=>"v0.115");
 
-$dbname="2021_03";
 
 echo "<h3>".$dbname."</h3>";
 	
@@ -34,7 +35,7 @@ echo "<h3>".$dbname."</h3>";
 $log_db = new PDO('sqlite:../GHData/GHdata_'.$dbname.'.db');
 // $log_db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-$sql = 'CREATE TABLE IF NOT EXISTS commitgit(id INTEGER PRIMARY KEY,cid VARCHAR(40) NOT NULL UNIQUE,p1id VARCHAR(40),p2id VARCHAR(40),author VARCHAR(32),thedate TIMESTAMP,p1start INTEGER,p1end INTEGER,p2start INTEGER,p2end INTEGER, space INTEGER, thetime TIMESTAMP, thetimed INTEGER, thetimeh INTEGER,message TEXT);';
+$sql = 'CREATE TABLE IF NOT EXISTS commitgit(id INTEGER PRIMARY KEY,cid VARCHAR(40) NOT NULL UNIQUE,p1id VARCHAR(40),p2id VARCHAR(40),author VARCHAR(32),thedate TIMESTAMP, space INTEGER, thetime TIMESTAMP, thetimed INTEGER, thetimeh INTEGER,message TEXT);';
 $log_db->exec($sql);
 	
 $sql = 'CREATE TABLE IF NOT EXISTS Bfile (id INTEGER PRIMARY KEY, purl TEXT, path TEXT, filename VARCHAR(256), filesize REAL, filelines INTEGER, harvestdate TIMESTAMP, gittag VARCHAR(16), courseyear VARCHAR(8));';
@@ -43,16 +44,13 @@ $log_db->exec($sql);
 $sql = 'CREATE TABLE IF NOT EXISTS Blame (id INTEGER PRIMARY KEY, blamedate TIMESTAMP, blameuser VARCHAR(32), href VARCHAR(64),mess TEXT, rowcnt INTEGER, fileid INTEGER, gittag VARCHAR(16), courseyear VARCHAR(8));';
 $log_db->exec($sql);
 
-$sql = 'CREATE TABLE IF NOT EXISTS CodeRow(id INTEGER PRIMARY KEY, fileid INTEGER, blameid INTEGER, blameuser VARCHAR(32), rowno INTEGER, code TEXT, gittag VARCHAR(16), courseyear VARCHAR(8));';
+$sql = 'CREATE TABLE IF NOT EXISTS CodeRow(id INTEGER PRIMARY KEY, fileid INTEGER, blameid INTEGER, blameuser VARCHAR(32), rowno INTEGER, code TEXT, gittag VARCHAR(16), courseyear VARCHAR(8),cid VARCHAR(40));';
 $log_db->exec($sql);
 
 $sql = 'CREATE TABLE IF NOT EXISTS issue (id INTEGER PRIMARY KEY,issueno VARCHAR(8), issuetime TIMESTAMP, issuetimed INTEGER, issuetimeh INTEGER, author VARCHAR(32), state VARCHAR(32), title TEXT, message TEXT);';
 $log_db->exec($sql);
 
 $sql = 'CREATE TABLE IF NOT EXISTS event (id INTEGER PRIMARY KEY,issueno VARCHAR(8), eventtime TIMESTAMP,eventtimed INTEGER, eventtimeh INTEGER, author VARCHAR(32), kind VARCHAR(32), content TEXT, aux TEXT);';
-$log_db->exec($sql);
-
-$sql = 'CREATE TABLE IF NOT EXISTS commitdata (id INTEGER PRIMARY KEY,issueno VARCHAR(8), commentno INTEGER, eventno INTEGER, author VARCHAR(32), content TEXT);';
 $log_db->exec($sql);
 
 $foo=file_get_contents("./commits/data_commits_".$dbname.".js");
@@ -92,19 +90,14 @@ foreach($arr as $key => $commit){
 		$intervald=$interval->format("%a");
 		$intervalh=$interval->format("%h");
 		
-		
 		$id=$commit->id;
 		$message=$commit->message;
 		
-		$query = $log_db->prepare('INSERT INTO commitgit(cid,p1id,p2id,p1start,p2start,p1end,p2end,space,thetime,thetimed,thetimeh,thedate,author,message) VALUES (:cid,:p1id,:p2id,:p1start,:p2start,:p1end,:p2end,:space,:thetime,:thetimed,:thetimeh,:thedate,:author,:message);');
+		$query = $log_db->prepare('INSERT INTO commitgit(cid,p1id,p2id,space,thetime,thetimed,thetimeh,thedate,author,message) VALUES (:cid,:p1id,:p2id,:space,:thetime,:thetimed,:thetimeh,:thedate,:author,:message);');
 	
 		$query->bindParam(':cid', $id);
 		$query->bindParam(':p1id', $p1ID);
 		$query->bindParam(':p2id', $p2ID);
-		$query->bindParam(':p1start', $p1Start);
-		$query->bindParam(':p2start', $p2Start);
-		$query->bindParam(':p1end', $p1End);
-		$query->bindParam(':p2end', $p2End);
 
 		$query->bindParam(':space', $space);
 		$query->bindParam(':thetime', $time);
@@ -114,7 +107,7 @@ foreach($arr as $key => $commit){
 		$query->bindParam(':thedate', $date);
 
 		$query->bindParam(':message', $message);
-		$query->bindParam(':author', $login);
+		$query->bindParam(':author', $author);
 
 		$query->execute();
 	
@@ -134,14 +127,14 @@ foreach($arr as $key => $commit){
 
 echo "<tr><td style='font-family:20px;font-weight:bold;'>ISSUES!</td></tr>";
 	
-$foo=file_get_contents("../GHData/data_issues_".$dbname.".js");
-$foo=substr($foo, 1);
+$foo=file_get_contents("../GHData/issues/data_issues_".$dbname.".js");
+//$foo=substr($foo, 1);
 $foo="[".$foo."]";
 
 $arr=json_decode($foo);	
 
 echo "<tr><td>";
-   echo json_last_error_msg() ;
+echo json_last_error_msg() ;
 echo "</td></tr>";
 
 // For every issue
@@ -212,8 +205,6 @@ foreach($arr as $key => $issue){
 				
 }
 
-/*
-
 // ---------------================############### Here comes Blame ############==================------------------------------
 
 echo "<tr><td style='font-family:20px;font-weight:bold;'>Blame!</td></tr>";
@@ -227,43 +218,19 @@ echo "<td>size</td>";
 echo "<td>scrape date</td>";
 echo "<td>file pos</td>";
 echo "</tr>";
-foreach($gittags as $courseyear => $gittag){
-  echo "<tr><td colspan='7'>Processing: ".$gittag."</td></tr>";
-  $foo=file_get_contents("../GHData/data_blame_".$gittag.".js");
-  $startpos=1;
-  $endpos=strlen($foo);
-	
-  $j=0;
-  $i=$startpos;
+$gittag="main";
+//foreach($gittags as $courseyear => $gittag){
+ // echo "<tr><td colspan='7'>Processing: ".$gittag."</td></tr>";
+//  $foo=file_get_contents("../GHData/data_blame_".$gittag.".js");
+$foo=file_get_contents("../GHData/blames/data_blame_".$dbname.".js");
   
-  while($i < $endpos){
-      //set_time_limit ( 100 );      
-      $workstr="";
-      $cnt=0;
-      $fo=0;
-      while($fo==0){
-        $workchr=substr($foo,$i,1);
-        if($workchr=="{"){
-            $cnt++;	
-        }else if($workchr=="}"){
-            $cnt--;
-            if($cnt==0){
-                $fo=1;
-                $i++;
-            }
-        }
-        if($foo==0) $workstr.=$workchr;
-      
-        $i++;
-				
-				if($i>=$endpos) break;
-        
-      }
-		
-			// echo $workstr."\n";
-  
-      $fileo=json_decode($workstr);
-      $j++;
+//$lastcomma=strrpos($foo,",");
+$foo="[".$foo."]";
+$filelist=json_decode($foo);
+echo json_last_error();
+echo json_last_error_msg();
+
+foreach($filelist as $fileo ){
   
       $purl=$fileo->purl;
       $path=$fileo->path;
@@ -283,7 +250,6 @@ foreach($gittags as $courseyear => $gittag){
       echo "<td>".$filelines."</td>";
       echo "<td>".$filesize."</td>";
       echo "<td>".$harvestdate."</td>";
-      echo "<td>".$i."</td>";
       echo "</tr>";
       
       $query = $log_db->prepare('INSERT INTO Bfile(purl,path,filename, filesize, filelines, harvestdate,courseyear,gittag) VALUES (:purl,:path,:filename,:filesize,:filelines,:harvestdate,:courseyear,:gittag)');
@@ -328,7 +294,7 @@ foreach($gittags as $courseyear => $gittag){
               $code=str_replace("__","&lt;",$code);
               $code=str_replace("**","&gt;",$code);
   
-              $query = $log_db->prepare('INSERT INTO CodeRow(fileid,blameid,blameuser,rowno,code,courseyear,gittag) VALUES (:fileid,:blameid,:blameuser,:rowno,:code,:courseyear,:gittag)');
+              $query = $log_db->prepare('INSERT INTO CodeRow(fileid,blameid,blameuser,rowno,code,courseyear,gittag,cid) VALUES (:fileid,:blameid,:blameuser,:rowno,:code,:courseyear,:gittag,:cid)');
       
               $query->bindParam(':fileid', $fileid);
               $query->bindParam(':blameid', $blameid);
@@ -336,18 +302,16 @@ foreach($gittags as $courseyear => $gittag){
               $query->bindParam(':rowno', $rowno);
               $query->bindParam(':code', $code);
               $query->bindParam(':courseyear', $courseyear);
-              $query->bindParam(':gittag', $gittag);    
+              $query->bindParam(':gittag', $gittag);
+              $query->bindParam(':cid', $href);                  
               $query->execute();
           }
           
       }
-  
   }
-  echo "<tr><td colspan='7'>Finished processing: ".$gittag."</td></tr>";
-}
 
-*/
-	
+  echo "<tr><td colspan='7'>Finished processing: ".$gittag."</td></tr>";
+
 ?> 
 
 </table>
