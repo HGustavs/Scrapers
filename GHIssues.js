@@ -409,6 +409,9 @@ $('.TimelineItem').each(function (i,tl) {
     }else if(evt=="project-created"){
       let txt=$(tl).find(".TimelineItem-body").first().text();
       issue+=writeevent(tme,usr,"projectcreated",writeContent(txt)); // Found in pull #9145
+    }else if(evt=="cross-reference-linked"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeevent(tme,usr,"crossreferencelinked",writeContent(txt)); // Found in pull #10141
     }else{
       alert("Unknown Event: "+evt+"\n\n"+tl.innerHTML);
     }
