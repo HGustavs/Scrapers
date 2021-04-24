@@ -8,23 +8,30 @@ $commits=Array();
 $spaces=Array("FIRST");
 
 // We look for latest empty space in spaces array
-function findLatestSpace($itemid)
+function findLatestSpace($itemid,$currdate)
 {
     global $spaces;
+    $treshold=365;
+    $currdate=date_create($currdate);
 
-    for($i=0;$i<count($spaces);$i++){
+    for($i=1;$i<count($spaces);$i++){
         if($spaces[$i]=="UNK"){
-            $spaces[$i]=$itemid;
+            $spaces[$i]=Array($itemid,$currdate);
             return $i;
+        }else{
+            $interval=$currdate->diff($spaces[$i][1])->format("%a");            ;
+            if($interval>$treshold){
+                $spaces[$i]=Array($itemid,$currdate);
+                return $i;              
+            }
         }
     }
 
-    $spaces[$i]=$itemid;
+    $spaces[$i]=Array($itemid,$currdate);
 
     return $i;
 }
 
-// 
 function clearLatestSpace($ind)
 {
     global $spaces;
@@ -137,6 +144,7 @@ foreach($commits as &$commit){
     $commitid=$commit['commitid'];
     $parents=$commit['parents'];
     $parentcnt=count($commit['parents']);
+    $commitdate=$commit['cdate'];
 
     // Update parents with reference to child
     foreach($parents as $parentid){
@@ -154,7 +162,7 @@ foreach($commits as &$commit){
             $parent=$commits[trim($parents[0])];
             if($parent['space']==-100){
                 // If parent comes after child (rare)
-                $commit['time']=findLatestSpace($commitid);
+                $commit['time']=findLatestSpace($commitid,$commitdate);
                 $commit['space']=$latestspace;
             }else{
                 $commit['space']=$parent['space']+1;
@@ -163,7 +171,7 @@ foreach($commits as &$commit){
                 if(count($parent['children'])==1){
                     $commit['time']=$parent['time'];
                 }else{
-                  $commit['time']=findLatestSpace($commitid);
+                  $commit['time']=findLatestSpace($commitid,$commitdate);
                 }
             }
           }else{
@@ -183,10 +191,10 @@ foreach($commits as &$commit){
                 $parentB['space']=$latestspace;
             }
             if($parentA['time']==-100){
-                $parentA['time']=findLatestSpace($commitid);
+                $parentA['time']=findLatestSpace($commitid,$commitdate);
             }
             if($parentB['time']==-100){
-                $parentB['time']=findLatestSpace($commitid);
+                $parentB['time']=findLatestSpace($commitid,$commitdate);
             }
 
             // Kinds of merges
@@ -212,7 +220,7 @@ foreach($commits as &$commit){
                 $type="C";
              }else{
                 // Neither can directly be a parent - generate new space - No closing
-                $commit['time']=findLatestSpace($commitid);
+                $commit['time']=findLatestSpace($commitid,$commitdate);
                 $type="D";
              }
 
@@ -222,6 +230,7 @@ foreach($commits as &$commit){
     }
    
     $i++;
+    //if($i>2350) break;
 
     unset($commit);
 }
@@ -236,6 +245,7 @@ $tab="<table style='font-family:courier;font-size:12px;' border=1>";
 $tab.="<tr><th>ID</th><th>space</th><th>time</th><th>parents</th><th>children</th></tr>";
 foreach($commits as $commitid => $commit){
     $i++;
+    // if($i>2350) break;
     if($i!=1) $json.=",\n";
     $json.="{\n";
 
@@ -303,8 +313,24 @@ $json.="]\n";
 // echo $tab;
 //echo $str;
 
-header('Content-Type: application/json'); 
+//header('Content-Type: application/json'); 
 //header('Content-Type: application/txt'); 
-echo $json;
+//echo $json;
+
+echo "<table>";
+foreach($spaces as $key=>$item){
+    if($key>0){
+        echo "<tr>";
+        echo "<td>".$key."</td>";
+        echo "<td>".$item[0]."</td>";
+        echo "<td>".$item[1]->format('Y-m-d H:i:s')."</td>";
+        echo "</tr>";
+    }
+}
+echo "</table>";
+
+echo $tab;
+
+
 
 ?>
