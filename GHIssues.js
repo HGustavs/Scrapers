@@ -347,8 +347,9 @@ $('.TimelineItem').each(function (i,tl) {
       // Ignore file diff - currently used as hidden dialog boxes
       //issue+=writeEvent(i,tme,usr,"smiley",writeContent(txt));		// Found in issue #2485
     }else if(evt=="unfold position-relative mr-1"){
-      let txt=$(tl).find(".TimelineItem-body").first().text();
-      issue+=writeevent(tme,usr,"unfold",writeContent(txt));		// Found in issue #712
+      // Ignore this event
+      //let txt=$(tl).find(".TimelineItem-body").first().text();
+      //issue+=writeevent(tme,usr,"unfold",writeContent(txt));		// Found in issue #712
     }else if(evt=="eye"){
       let txt=$(tl).find(".TimelineItem-body").first().text();
       issue+=writeevent(tme,usr,"eye",writeContent(txt));		// Found in issue #891
