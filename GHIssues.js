@@ -13,11 +13,11 @@ var req=null;
 var timeout=null;
 var timeoutDelay=4000;
 var iii=7;
-var start=8000;
+var start=1;
 var stop=11000;
 var year=2021;
-var week=3;
-var suffix="20210420mb";
+var week=4;
+var suffix="20210426mb";
 var dataFile="data_issues_"+year+"_v"+week+"_"+start+"-"+stop
 if(suffix!="")dataFile+="_"+suffix;
 dataFile+=".js";
@@ -405,7 +405,19 @@ $('.TimelineItem').each(function (i,tl) {
       issue+=writeevent(tme,usr,"pinunpinned",writeContent(txt)); // Found in pull #7847
     }else if(evt=="x-deleted"){
       let txt=$(tl).find(".TimelineItem-body").first().text();
-      issue+=writeevent(tme,usr,"xdeleted",writeContent(txt)); // Found in pull #6216
+      issue+=writeevent(tme,usr,"xdeleted",writeContent(txt)); // Found in pull #4097
+    }else if(evt=="issue-closed-closed"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeevent(tme,usr,"issueclosedclosed",writeContent(txt)); // Found in pull #6216
+    }else if(evt=="issue-opened-reopened"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeevent(tme,usr,"issueopenedreopened",writeContent(txt)); // Found in pull #4147
+    }else if(evt=="git-pull-request-closed"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeevent(tme,usr,"gitpullrequestclosed",writeContent(txt)); // Found in pull #4106
+    }else if(evt=="git-pull-request-reopened"){
+      let txt=$(tl).find(".TimelineItem-body").first().text();
+      issue+=writeevent(tme,usr,"gitpullrequestreopened",writeContent(txt));
     }else if(evt=="project-created"){
       let txt=$(tl).find(".TimelineItem-body").first().text();
       issue+=writeevent(tme,usr,"projectcreated",writeContent(txt)); // Found in pull #9145
@@ -415,9 +427,9 @@ $('.TimelineItem').each(function (i,tl) {
     }else{
       alert("Unknown Event: "+evt+"\n\n"+tl.innerHTML);
     }
-});
+}); 
 
-// End of events
+// End of events 
 issue += ']';
 issue += '}\n';
 
