@@ -16,8 +16,8 @@ var iii=7;
 var start=1;
 var stop=11000;
 var year=2021;
-var week=4;
-var suffix="20210426mb";
+var week=5;
+var suffix="20210503mb";
 var dataFile="data_issues_"+year+"_v"+week+"_"+start+"-"+stop
 if(suffix!="")dataFile+="_"+suffix;
 dataFile+=".js";
@@ -425,6 +425,10 @@ $('.TimelineItem').each(function (i,tl) {
     }else if(evt=="cross-reference-linked"){
       let txt=$(tl).find(".TimelineItem-body").first().text();
       issue+=writeevent(tme,usr,"crossreferencelinked",writeContent(txt)); // Found in pull #10141
+    }else if(evt=="plus"){
+      // Ignore this event
+      //let txt=$(tl).find(".TimelineItem-body").first().text();
+      //issue+=writeevent(tme,usr,"crossreferencelinked",writeContent(txt));
     }else{
       alert("Unknown Event: "+evt+"\n\n"+tl.innerHTML);
     }
