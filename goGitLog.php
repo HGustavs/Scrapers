@@ -110,6 +110,7 @@ if ($handle) {
             $author=substr($author,strpos($author,"<")+1,strpos($author,">")-strpos($author,"<")-1);
             $author=substr($author,0,strpos($author,"@"));
             $author=str_replace(' ', '', $author);
+            $author=str_replace('ä', 'a', $author);            
 
             if(strpos($author,"+")>0) $author=substr($author,strpos($author,"+")+1);
             //echo $author." ".$authorname."\n";

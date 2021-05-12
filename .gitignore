@@ -2,3 +2,4 @@
 scrapeData.js
 data_*.js
 substitution.php
+.DS_Store
